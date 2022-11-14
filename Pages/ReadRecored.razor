@@ -1,0 +1,70 @@
+﻿@page "/records"
+@inject SoduService soduService;
+@inject NavigationManager Navigation;
+@using System.Text.Encodings.Web;
+@using System.Text;
+@using MauiApp3.Common;
+@using MauiApp3.Data
+@using System.Data;
+@using MauiApp3.Model;
+
+<NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary">主页</NavLink>
+@if (dt != null && dt.Count > 0)
+{
+     <button @onclick="DelAll" class="btn btn-lg btn-block btn-outline-primary">删除所有记录</button>
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">操作</th>
+      <th scope="col">小说名称</th>
+      <th scope="col">章节</th>
+    </tr>
+  </thead>
+  <tbody>
+      @for (int i = 0; i < dt.Count; i++)
+            {
+                var index=i;
+                <tr>
+                    <td><input type="checkbox" /></td>
+                    <th scope="row"><p @onclick=@(e=>ParseParamters(e,0,index)) @onclick:preventDefault>@dt[i].novelname</p></th>
+                    <td><p @onclick=@(e=>ParseParamters(e,1,index)) @onclick:preventDefault>@dt[i].chaptername</p></td>
+                   
+                </tr>
+            }
+    
+    
+  </tbody>
+    </table>
+
+}
+else
+{
+  <p>无任何阅读记录</p>    
+}
+@code {
+    private List<Records> dt;
+    protected override async Task OnParametersSetAsync()
+    {
+        dt = await soduService.GetAllRecords();
+    }
+    public async void DelAll()
+    {
+        if (await soduService.DelAllRecord())
+        {
+            await Application.Current.MainPage.DisplayAlert("提示","删除完成！","确定");
+            Navigation.NavigateTo("/records",true);
+        }
+    }
+    public void ParseParamters(MouseEventArgs e,int flag, int i)
+    {
+        if (flag == 0)
+        {
+            Navigation.GoTo("/detial", dt[i].noveladdr, dt[i].novelid, dt[i].novelname, dt[i].noveladdr);
+        }
+        else
+        {
+            Navigation.GoTo("/catalogs", dt[i].chapteraddr, dt[i].novelid, dt[i].novelname, dt[i].noveladdr);
+        }
+    }
+   
+}

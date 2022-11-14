@@ -1,0 +1,101 @@
+﻿@page "/detial/{url}/{NovelId}/{NovelName}/{NovelAddr}/{pageNum:int?}"
+@using MauiApp3.Common;
+@using MauiApp3.Data;
+@using System.Text.Encodings.Web;
+@using System.Text;
+@inject NavigationManager Navigation;
+@inject SoduService soduService;
+@if (novelInfo == null)
+{
+    <p>dataloading............</p>
+}
+else
+{
+    <p>当前页：@pageNum</p>
+    <div class="btn-group  container">
+        <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary">主页</NavLink>
+        <NavLink href="/records" class="btn btn-lg btn-block btn-outline-primary">历史记录</NavLink>
+
+        @if (novelInfo.CurrentPage > 1)
+        {
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">上一页(@(novelInfo.CurrentPage - 1))</a>
+        }
+        @if (novelInfo.CurrentPage < novelInfo.TotalPage)
+        {
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">尾页(@(novelInfo.TotalPage))</a>
+        }
+        @if (novelInfo.CurrentPage < novelInfo.TotalPage)
+        {
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">下一页(@(novelInfo.CurrentPage + 1))</a>
+        }
+    </div>
+    <h1>@novelInfo.Name</h1>
+    <p>@novelInfo.Author</p>
+    <p>@novelInfo.NovelType</p>
+    <p>@novelInfo.LastChapter</p>
+    <ul>
+        
+    @foreach (var item in novelInfo.Chapters)
+    {
+        <li class="media text-muted pt-3">
+            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray align-middle">
+                    <a @onclick=@(e=>Navigation.GoTo("/catalogs",item.Url,NovelId,NovelName,NovelAddr)) @onclick:preventDefault>
+                    <strong class="d-block text-gray-dark">@item.Name</strong>
+                </a>
+            </p>
+        </li>
+       
+    }
+    </ul>
+    <div class="btn-group container">
+        <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary">主页</NavLink>
+
+        @if (novelInfo.CurrentPage > 1)
+        {
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">上一页(@(novelInfo.CurrentPage - 1))</a>
+        }
+        @if (novelInfo.CurrentPage < novelInfo.TotalPage)
+        {
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">尾页(@(novelInfo.TotalPage))</a>
+        }
+        @if (novelInfo.CurrentPage < novelInfo.TotalPage)
+        {
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">下一页(@(novelInfo.CurrentPage + 1))</a>
+        }
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public string url { get; set; }
+    [Parameter]
+    public int? pageNum { get; set; }
+    [Parameter]
+    public string NovelId { get; set; }
+    [Parameter]
+    public string NovelName { get; set; }
+    [Parameter]
+    public string NovelAddr { get; set; }
+    public MauiApp3.Model.NovelInfo novelInfo;
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        novelInfo= await soduService.GetNovel(url,pageNum.HasValue?pageNum.Value:0);
+    }
+   
+    public void GoToNext(MouseEventArgs e, int page)
+    {
+        try
+        {
+            Navigation.NavigateTo($"/detial/{UrlEncoder.Default.Encode(url)}/{NovelId}/{UrlEncoder.Default.Encode(NovelName)}/{UrlEncoder.Default.Encode(NovelAddr)}/{page}");
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+
+
+    }
+}
