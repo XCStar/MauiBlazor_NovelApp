@@ -11,8 +11,9 @@
 <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary">主页</NavLink>
 @if (dt != null && dt.Count > 0)
 {
-     <button @onclick="DelAll" class="btn btn-lg btn-block btn-outline-primary">删除所有记录</button>
-    <table class="table">
+  <button @onclick="DelAll" class="btn btn-lg btn-block btn-outline-primary">删除所有记录</button>
+    <button @onclick="DelIds" class="btn btn-lg btn-block btn-outline-primary">删除</button>
+  <table class="table">
   <thead>
     <tr>
       <th scope="col">操作</th>
@@ -25,7 +26,7 @@
             {
                 var index=i;
                 <tr>
-                    <td><input type="checkbox" /></td>
+                    <td><input type="checkbox" @onchange="@(e=>SelectDel(e,index))" /></td>
                     <th scope="row"><p @onclick=@(e=>ParseParamters(e,0,index)) @onclick:preventDefault>@dt[i].novelname</p></th>
                     <td><p @onclick=@(e=>ParseParamters(e,1,index)) @onclick:preventDefault>@dt[i].chaptername</p></td>
                    
@@ -43,9 +44,29 @@ else
 }
 @code {
     private List<Records> dt;
+    private List<int> SelectIndexs=new List<int>();
     protected override async Task OnParametersSetAsync()
     {
         dt = await soduService.GetAllRecords();
+    }
+    public void SelectDel(ChangeEventArgs e,int index)
+    {
+        if (e.Value is bool)
+        {
+            var v = (bool)e.Value;
+            if (v)
+            {
+                SelectIndexs.Add(index);
+            }
+            else
+            {
+                SelectIndexs.Remove(index);   
+            }
+        }
+        else
+        {
+           Application.Current.MainPage.DisplayAlert("提示", "错误!", "确认");
+        }
     }
     public async void DelAll()
     {
@@ -54,6 +75,28 @@ else
             await Application.Current.MainPage.DisplayAlert("提示","删除完成！","确定");
             Navigation.NavigateTo("/records",true);
         }
+    }
+    public async Task DelIds()
+    {
+        if (SelectIndexs.Count > 0)
+        {
+            var ids = new List<int>();
+            for (int i = 0; i < SelectIndexs.Count; i++)
+            {
+                ids.Add(dt[i].id);
+            }
+            if (await soduService.DelByIds(ids))
+            {
+                await Application.Current.MainPage.DisplayAlert("提示", "删除成功!", "确认");
+                Navigation.NavigateTo("/records", true);
+            }
+
+        }
+        else
+        {
+            await Application.Current.MainPage.DisplayAlert("提示", "未选中任何记录", "确认");
+        }
+
     }
     public void ParseParamters(MouseEventArgs e,int flag, int i)
     {

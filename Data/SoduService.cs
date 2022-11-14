@@ -375,7 +375,7 @@ namespace MauiApp3.Data
                 return id;
             }    
         }
-        private async Task<bool> DelByIds(List<int>Ids)
+        public async Task<bool> DelByIds(List<int>Ids)
         {
             var sql = new SQLiteAsyncConnection(conncetString);
             {
