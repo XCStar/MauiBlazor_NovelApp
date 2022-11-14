@@ -1,30 +1,22 @@
 ﻿@page "/"
+@using MauiApp3.Common;
 @using MauiApp3.Data;
 @inject NavigationManager Navigation;
 @inject SoduService soduService;
 @inject IJSRuntime js;
 
-
-    <div class="container"><a @onclick=@(e=>GoTo(e,"/index","1")) class="btn btn-lg btn-bd-primary" @onclick:preventDefault>主页</a></div>
-
-    <div class="container"><a @onclick=Clear class="btn btn-lg btn-bd-primary" @onclick:preventDefault>清除缓存</a></div>
-    <p>@info</p>
+<div class="row">
+<a @onclick=@(e=>Navigation.GoTo("/index","1")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>主  页</a>
+</div>
+<div class="row">
+<a @onclick=Clear class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>清除缓存</a>
+</div>
+<div class="row">
+    <a @onclick=@(e=>Navigation.GoTo("/records")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>阅读记录</a>
+</div>
 @code {
-    public string info { get; set; }
-    protected override void OnInitialized()
-    {
-        info = soduService.Test();
-    }
-    public void GoTo(MouseEventArgs e, string url,params string[] args)
-    {
-        var list = new List<string>(args.Length+1);
-        list.Add(url);
-        if (args.Length > 0)
-        {
-            list.AddRange(args);
-        }
-        Navigation.NavigateTo(string.Join("/",list));
-    }
+   
+    
     public async Task Clear()
     {
         if (soduService.ClearCache())

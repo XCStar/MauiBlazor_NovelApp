@@ -13,20 +13,20 @@ else
 {
     <p>当前页：@pageNum</p>
     <div class="btn-group  container">
-        <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary">主页</NavLink>
-        <NavLink href="/records" class="btn btn-lg btn-block btn-outline-primary">历史记录</NavLink>
+        <NavLink href="/index/1" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">主页</NavLink>
+        <NavLink href="/records" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">历史记录</NavLink>
 
         @if (novelInfo.CurrentPage > 1)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">上一页(@(novelInfo.CurrentPage - 1))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">上一页(@(novelInfo.CurrentPage - 1))</a>
         }
         @if (novelInfo.CurrentPage < novelInfo.TotalPage)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">尾页(@(novelInfo.TotalPage))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">尾页(@(novelInfo.TotalPage))</a>
         }
         @if (novelInfo.CurrentPage < novelInfo.TotalPage)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">下一页(@(novelInfo.CurrentPage + 1))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">下一页(@(novelInfo.CurrentPage + 1))</a>
         }
     </div>
     <h1>@novelInfo.Name</h1>
@@ -48,19 +48,19 @@ else
     }
     </ul>
     <div class="btn-group container">
-        <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary">主页</NavLink>
+        <NavLink href="/index/1" class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">主页</NavLink>
 
         @if (novelInfo.CurrentPage > 1)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">上一页(@(novelInfo.CurrentPage - 1))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">上一页(@(novelInfo.CurrentPage - 1))</a>
         }
         @if (novelInfo.CurrentPage < novelInfo.TotalPage)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">尾页(@(novelInfo.TotalPage))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">尾页(@(novelInfo.TotalPage))</a>
         }
         @if (novelInfo.CurrentPage < novelInfo.TotalPage)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary">下一页(@(novelInfo.CurrentPage + 1))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">下一页(@(novelInfo.CurrentPage + 1))</a>
         }
     </div>
 }

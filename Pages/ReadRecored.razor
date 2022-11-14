@@ -7,12 +7,15 @@
 @using MauiApp3.Data
 @using System.Data;
 @using MauiApp3.Model;
+<div class="container">
+    <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary mt-2">主页</NavLink>
+    <button @onclick="DelAll" class="btn btn-lg btn-block btn-outline-primary mt-2">删除所有记录</button>
+    <button @onclick="DelIds" class="btn btn-lg btn-block btn-outline-primary mt-2">删除</button>
+</div>
 
-<NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary">主页</NavLink>
 @if (dt != null && dt.Count > 0)
 {
-  <button @onclick="DelAll" class="btn btn-lg btn-block btn-outline-primary">删除所有记录</button>
-    <button @onclick="DelIds" class="btn btn-lg btn-block btn-outline-primary">删除</button>
+   
   <table class="table">
   <thead>
     <tr>
@@ -40,14 +43,24 @@
 }
 else
 {
-  <p>无任何阅读记录</p>    
+  <p>@Message</p>    
 }
 @code {
     private List<Records> dt;
     private List<int> SelectIndexs=new List<int>();
+    private string Message = "无任何阅读记录";
     protected override async Task OnParametersSetAsync()
     {
-        dt = await soduService.GetAllRecords();
+        try
+        {
+            dt = await soduService.GetAllRecords();
+        }
+        catch (Exception ex)
+        {
+            dt.Clear();
+            Message = "发生错误"+ex.Message;
+        }
+
     }
     public void SelectDel(ChangeEventArgs e,int index)
     {
@@ -65,11 +78,15 @@ else
         }
         else
         {
-           Application.Current.MainPage.DisplayAlert("提示", "错误!", "确认");
+            Application.Current.MainPage.DisplayAlert("提示", "错误!", "确认");
         }
     }
-    public async void DelAll()
+    public async Task DelAll()
     {
+        if (dt == null || dt.Count < 1)
+        {
+            return;   
+        }
         if (await soduService.DelAllRecord())
         {
             await Application.Current.MainPage.DisplayAlert("提示","删除完成！","确定");
@@ -78,12 +95,13 @@ else
     }
     public async Task DelIds()
     {
+       
         if (SelectIndexs.Count > 0)
         {
             var ids = new List<int>();
             for (int i = 0; i < SelectIndexs.Count; i++)
             {
-                ids.Add(dt[i].id);
+                ids.Add(dt[SelectIndexs[i]].id);
             }
             if (await soduService.DelByIds(ids))
             {
