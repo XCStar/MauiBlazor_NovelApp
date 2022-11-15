@@ -5,9 +5,14 @@
 @using System.Text;
 @inject NavigationManager Navigation;
 @inject SoduService soduService;
+@inject IJSRuntime js;
 @if (novelInfo == null)
 {
-    <p>dataloading............</p>
+    <div class="btn-group  container">
+        <NavLink href="/index/1" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">主页</NavLink>
+        <NavLink href="/records" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">历史记录</NavLink>
+    </div>
+    <p>@Message</p>
 }
 else
 {
@@ -29,10 +34,12 @@ else
             <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">下一页(@(novelInfo.CurrentPage + 1))</a>
         }
     </div>
+    <div class="row container text-center mt-3">
     <h1>@novelInfo.Name</h1>
     <p>@novelInfo.Author</p>
     <p>@novelInfo.NovelType</p>
     <p>@novelInfo.LastChapter</p>
+    </div>
     <ul>
         
     @foreach (var item in novelInfo.Chapters)
@@ -78,10 +85,25 @@ else
     [Parameter]
     public string NovelAddr { get; set; }
     public MauiApp3.Model.NovelInfo novelInfo;
-    
+    public string Message = "loading .......";
     protected override async Task OnParametersSetAsync()
     {
-        novelInfo= await soduService.GetNovel(url,pageNum.HasValue?pageNum.Value:0);
+        try
+        {
+            await js.InvokeVoidAsync("loading", true);
+            novelInfo = await soduService.GetNovel(url, pageNum.HasValue ? pageNum.Value : 0);
+           
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+            StateHasChanged();
+        }
+        finally
+        {
+            await js.InvokeVoidAsync("loading", false);
+        }
+
     }
    
     public void GoToNext(MouseEventArgs e, int page)

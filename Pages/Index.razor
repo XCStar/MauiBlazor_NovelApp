@@ -5,9 +5,14 @@
 @using System.Text;
 @inject MauiApp3.Data.SoduService soduService;
 @inject NavigationManager Navigation
+@inject IJSRuntime js;
 @if (novelPageInfo is null)
 {
-    <p><em>data loadoing..........</em></p>
+    <div class="btn-group container">
+        <NavLink href="/" class="btn text-nowrap btn-sm btn-block btn-outline-primary">主页</NavLink>
+        <NavLink href="/records" class="btn text-nowrap btn-sm btn-block btn-outline-primary">历史记录</NavLink>
+    </div>
+    <p><em>@Message</em></p>
 }
 else
 {
@@ -16,7 +21,7 @@ else
 <form>
             <div class="form-group mx-sm-3  mt-3">
     <input type="text" class="form-control mb-3" @bind="searchText" placeholder="输入小说名称">
-                <button type="submit" class="btn btn-primary ml-3" @onclick=@(e=>Navigation.GoTo("/search",searchText)) @onclick:preventDefault>搜索</button>
+                <button type="submit" class="btn btn-primary  float-end mr-2" @onclick=@(e=>Navigation.GoTo("/search",searchText)) @onclick:preventDefault>搜索</button>
 </div>
 
 </form>
@@ -62,20 +67,20 @@ else
 
             </ul>
   </div>
-    <div class="btn-group container">
-        <NavLink href="/" class="btn btn-lg btn-block btn-outline-primary mb-2">主页</NavLink>
-        <NavLink href="/records" class="btn text-nowrap btn-sm btn-block btn-outline-primary  mb-2">历史记录</NavLink>
+    <div class="btn-group container mb-1">
+        <NavLink href="/" class="btn btn-sm btn-block btn-outline-primary">主页</NavLink>
+        <NavLink href="/records" class="btn text-nowrap btn-sm btn-block btn-outline-primary">历史记录</NavLink>
         @if (novelPageInfo.CurrentPage > 1)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/index",(novelPageInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary  mb-2">上一页</a>
+            <a @onclick=@(e=>Navigation.GoTo("/index",(novelPageInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">上一页</a>
         }
         @if (novelPageInfo.CurrentPage < novelPageInfo.PageCount)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/index",novelPageInfo.PageCount.ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary  mb-2">尾页</a>
+            <a @onclick=@(e=>Navigation.GoTo("/index",novelPageInfo.PageCount.ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">尾页</a>
         }
         @if (novelPageInfo.CurrentPage < novelPageInfo.PageCount)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/index",(novelPageInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary  mb-2">下一页</a>
+            <a @onclick=@(e=>Navigation.GoTo("/index",(novelPageInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">下一页</a>
         }
      </div>
 
@@ -90,10 +95,25 @@ else
     public int? pageNum { get; set; }
     public string searchText {get;set;}
     private NovelPageInfo novelPageInfo;
- 
+    public string Message = "Loading";
     protected override async Task OnParametersSetAsync()
     {
-        novelPageInfo = await soduService.GetVisit(pageNum.HasValue?pageNum.Value:1);
+        await js.InvokeVoidAsync("loading", true);
+        try
+        {
+            novelPageInfo = await soduService.GetVisit(pageNum.HasValue ? pageNum.Value : 1);
+        }
+        catch (Exception ex)
+        {
+            StateHasChanged();
+            Message ="发生错误"+ex.Message;
+        }
+        finally
+        {
+            await js.InvokeVoidAsync("loading", false);
+        }
+       
+       
     }
 
 }

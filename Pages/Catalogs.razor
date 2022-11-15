@@ -5,23 +5,37 @@
 @using System.Text;
 @inject NavigationManager Navigation
 @inject SoduService soduService;
+@inject IJSRuntime js;
 @if (novelContent == null)
 {
+     <div class="btn-group container">
+        <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary  mt-2">主页</NavLink>
+
+        <NavLink href="/records" class="btn btn-lg btn-block btn-outline-primary  mt-2">历史记录</NavLink>
+     </div>
     <p>@Message</p>
 }
 else
 {
     <div class="btn-group container">
         <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary  mt-2">主页</NavLink>
-
         <NavLink href="/records" class="btn btn-lg btn-block btn-outline-primary  mt-2">历史记录</NavLink>
         @if (!string.IsNullOrEmpty(novelContent.Next))
         {
             <a @onclick=@(e=>Navigation.GoTo("/catalogs",novelContent.Next,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mt-2">下一页</a>
         }
     </div>
-    
-    <div style="background:#e6e6e6">@(new MarkupString(novelContent.Content))</div>
+    <div class="row mt-1 mb-1" >
+        <div class="col-8"></div>
+        <div class="col-2">
+            <button class="btn btn-outline-dark" @onclick="@(e=>SetFontSize())">+</button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-outline-dark" @onclick="@(e=>SetFontSize(false))">-</button>
+        </div>
+       
+    </div>
+    <div style="background:#e6e6e6;font-size:@(fontSize)px">@(new MarkupString(novelContent.Content))</div>
     <div class="btn-group container">
         <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary mb-3">主页</NavLink>
         @if (!string.IsNullOrEmpty(novelContent.Next))
@@ -39,20 +53,39 @@ else
     public string NovelName { get; set; }
     [Parameter]
     public string NovelAddr { get; set; }
+    public static int fontSize = 14;
     public MauiApp3.Model.NovelContent novelContent;
     public string Message = "Data Loading ............";
     protected override async Task OnParametersSetAsync()
     {
         try
         {
+            await js.InvokeVoidAsync("loading", true);
             novelContent = await soduService.GetChapter(url, NovelId, NovelName, NovelAddr);
+
         }
         catch (Exception ex)
         {
-
-            Message = "发生错误"+ex.Message;
+            StateHasChanged();
+            Message = "发生错误" + ex.Message;
         }
-        
+        finally
+        {
+            await js.InvokeVoidAsync("loading", false);
+        }
+
     }
-   
+    public void SetFontSize(bool add=true)
+    {
+        if (add)
+        {
+            fontSize+=1;
+        }
+        else
+        {
+            fontSize-=1;   
+        }
+        StateHasChanged();
+    }
+
 }

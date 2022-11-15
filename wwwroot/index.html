@@ -13,7 +13,13 @@
 <body>
 
     <div class="status-bar-safe-area"></div>
-
+    <div class="bg-opacity-75 bg-black w-100 h-100 position-absolute loading">
+        <div class="d-flex justify-content-center mt-5">
+            <div class="spinner-border  text-success mt-5" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
     <div id="app">Loading...</div>
 
     <div id="blazor-error-ui">
@@ -23,7 +29,16 @@
     </div>
 
     <script src="_framework/blazor.webview.js" autostart="false"></script>
-
+    <script>
+        function loading(open) {
+            var d = document.querySelector(".loading");
+            if (open) {
+                d.style.display = "block";
+            } else {
+                d.style.display = "none";
+            }
+        }
+    </script>
 </body>
 
 </html>
