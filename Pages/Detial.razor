@@ -65,11 +65,25 @@ else
         {
             <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">尾页(@(novelInfo.TotalPage))</a>
         }
+
         @if (novelInfo.CurrentPage < novelInfo.TotalPage)
         {
             <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">下一页(@(novelInfo.CurrentPage + 1))</a>
         }
     </div>
+    @if (novelInfo.TotalPage > 1)
+    {
+        <div class="input-group container">
+            <label class="input-group-text border-primary text-primary">页码</label>
+            <select class="form-select form-select-sm border-primary" @onchange="SelectedChanged">
+                @for (int i = 0; i < novelInfo.TotalPage; i++)
+                {
+                    <option value="@(i+1)">@(i + 1)</option>
+                }
+            </select>
+            <label class="input-group-text border-primary text-primary">          </label>
+        </div>
+    }
 }
 
 
@@ -86,6 +100,22 @@ else
     public string NovelAddr { get; set; }
     public MauiApp3.Model.NovelInfo novelInfo;
     public string Message = "loading .......";
+    public void SelectedChanged(ChangeEventArgs e)
+    {
+
+        if (e.Value is not null)
+        {
+            if(int.TryParse(e.Value.ToString(),out int v))
+            {
+                if (v != novelInfo.CurrentPage)
+                {
+                    Navigation.GoTo("/detial", url, NovelId, NovelName, NovelAddr, v.ToString());
+                }
+               
+            }
+          
+        }
+    }
     protected override async Task OnParametersSetAsync()
     {
         try

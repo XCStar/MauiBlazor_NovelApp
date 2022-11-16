@@ -6,6 +6,9 @@
 @inject IJSRuntime js;
 
 <div class="row">
+    <a @onclick=@(e=>Navigation.GoTo("/news")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>今日头条</a>
+</div>
+<div class="row">
 <a @onclick=@(e=>Navigation.GoTo("/index","1")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>主  页</a>
 </div>
 <div class="row">

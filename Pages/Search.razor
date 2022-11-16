@@ -6,6 +6,7 @@
 @using System.Text.Encodings.Web;
 @inject SoduService soduService;
 @inject NavigationManager Navigation;
+@inject IJSRuntime js;
 <div class="container">
     <NavLink href="/index" class="btn btn-lg btn-block btn-outline-primary">首页</NavLink>
 
@@ -33,24 +34,38 @@
     }
     else
     {
-        <p>无搜索结果！！！</p>
+        <p>@Message</p>
     }
 </div>
 
 @code {
     [Parameter]
     public string searchText { get; set; }
-
+    public string Message = "loading......";
     private NovelPageInfo novelPageInfo;
     protected override async Task OnParametersSetAsync()
     {
         if (!string.IsNullOrEmpty(searchText))
         {
-            novelPageInfo = await soduService.Search(searchText);
+            try
+            {
+                await js.InvokeVoidAsync("loading", true);
+                novelPageInfo = null;
+                novelPageInfo = await soduService.Search(searchText);
+            }
+            catch (Exception ex)
+            {
+                Message = $"发生错误-{ex.Message}";
+            }
+            finally
+            {
+                await js.InvokeVoidAsync("loading", false);
+            }
+
         }
         else
         {
-            novelPageInfo = new NovelPageInfo();
+            Message = "无搜索关键字";
 
         }
     }

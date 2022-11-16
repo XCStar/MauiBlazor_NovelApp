@@ -403,7 +403,7 @@ namespace MauiApp3.Data
             var sql = new SQLiteAsyncConnection(conncetString);
 
             {
-               var list= await sql.QueryAsync<Records>("select * from records");
+               var list= await sql.QueryAsync<Records>("select * from records order by id desc");
                 return list;
             }
             

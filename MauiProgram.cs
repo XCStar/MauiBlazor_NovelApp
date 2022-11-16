@@ -24,19 +24,31 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
-		//builder.Services.AddSingleton<WeatherForecastService>();
-		builder.Services
-			.AddHttpClient("sodu").ConfigurePrimaryHttpMessageHandler(() => {
-				return new HttpClientHandler
-				{
-					AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip
+        //builder.Services.AddSingleton<WeatherForecastService>();
+        builder.Services
+            .AddHttpClient("sodu").ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip
 
-				};
-			
-			});
-		builder.Services.AddSingleton<SoduService>();
+                };
+
+            });
+        builder.Services.AddHttpClient("my").ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            return new HttpClientHandler
+            {
+                AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip|System.Net.DecompressionMethods.Brotli
+
+            };
+
+        });
+
+        builder.Services.AddSingleton<SoduService>();
 		builder.Services.AddSingleton<IFileSystem>(FileSystem.Current);
-		return builder.Build();
+        builder.Services.AddSingleton<NewsService>();
+        return builder.Build();
 	}
     
 }
