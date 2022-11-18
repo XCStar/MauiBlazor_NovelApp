@@ -44,7 +44,15 @@ public static class MauiProgram
             };
 
         });
+        builder.Services.AddHttpClient("top").ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            return new HttpClientHandler
+            {
+                AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Brotli
 
+            };
+
+        });
         builder.Services.AddSingleton<SoduService>();
 		builder.Services.AddSingleton<IFileSystem>(FileSystem.Current);
         builder.Services.AddSingleton<NewsService>();
