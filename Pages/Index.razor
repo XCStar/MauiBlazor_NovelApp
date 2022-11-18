@@ -28,7 +28,7 @@ else
    </div>
   <div class="d-flex flex-column bd-highlight mb-3"></div>
   <div class="p-2 bd-highlight">
-      <p>当前页：@novelPageInfo.CurrentPage</p>
+      <p>当前页：@novelPageInfo.CurrentPage 总页数:@novelPageInfo.PageCount</p>
     <div class="btn-group container">
             <NavLink href="/" class="btn text-nowrap btn-sm btn-block btn-outline-primary">主页</NavLink>
 
@@ -83,7 +83,12 @@ else
             <a @onclick=@(e=>Navigation.GoTo("/index",(novelPageInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">下一页</a>
         }
      </div>
-
+    <div class="container">
+        <div class="input-group mb-3 mt-2">
+            <input type="text" class="form-control" placeholder="input page number" @bind=pageNum>
+            <button class="btn btn-outline-primary" @onclick=@(e=>GoToPage()) id="button-addon2">跳转</button>
+        </div>
+    </div>
 
     
     
@@ -96,6 +101,7 @@ else
     public string searchText {get;set;}
     private NovelPageInfo novelPageInfo;
     public string Message = "Loading";
+
     protected override async Task OnParametersSetAsync()
     {
         await js.InvokeVoidAsync("loading", true);
@@ -112,8 +118,15 @@ else
         {
             await js.InvokeVoidAsync("loading", false);
         }
-       
-       
-    }
 
+
+    }
+    public void GoToPage()
+    {
+        if (pageNum != null && pageNum.Value != novelPageInfo.CurrentPage && pageNum.Value <= novelPageInfo.PageCount)
+        {
+            Navigation.GoTo("/index", pageNum.Value.ToString()); 
+        }
+
+    }
 }

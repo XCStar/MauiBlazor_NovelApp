@@ -20,11 +20,62 @@
 <li class="nav-item" role="presentation">
         <button class="nav-link" id="pills-t-tab" @onclick="@(e=>GetNews(69))" data-bs-toggle="pill" data-bs-target="#pills-t" type="button" role="tab" aria-controls="pills-t" aria-selected="false">今日头条</button>
 </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(132,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">开发者头条</button>
+        </li
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(54,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">GitHub</button>
+        </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(89,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">看雪</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(327,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">安全客</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(326,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">FreeBuf</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(2,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">百度</button>
+        </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(18))" data-bs-toggle="pill" data-bs-target="#pills-b" type="button" role="tab" aria-controls="pills-b" aria-selected="false">B站</button>
     </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(12))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">IT</button>
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(12))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">开源</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(6))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">IT</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(68,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">52破解</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(221,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">抖音</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(5832,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">起点</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(5846,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">纵横</button>
+        </li>
+         <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(125,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">知乎日报</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(289,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">开眼</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(369,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">历史上的今天</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(137,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">少数派</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(11,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">36氪</button>
+        </li>
+         <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(46,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">天涯</button>
         </li>
 </ul>
 <div class="tab-content" id="pills-tabContent">
@@ -36,7 +87,7 @@
 
                     @foreach (var item in news)
                     {
-                        <li class="list-group-item"><a class="link-primary" style="text-decoration:none" href="@item.link">@item.title</a><span>@(item.extra)</span></li>
+                        <li class="list-group-item"><a class="link-primary" style="text-decoration:none" href="@item.link">@item.title</a><span class="badge bg-danger">@(item.extra)</span></li>
                     }
 
 
@@ -63,12 +114,20 @@
       {6,"k" },
 
     };
-    public async Task GetNews(int id)
+    public async Task GetNews(int id,bool flag=true)
     {
         try
         {
             await js.InvokeVoidAsync("loading", true);
-            news = await newService.GetNewsByID(id);
+            if (flag)
+            {
+                news = await newService.GetNewsByID(id);
+            }
+            else
+            {
+                news = await newService.GetNewByTopID(id);
+            }
+           
         }
         catch (Exception ex)
         {
@@ -82,6 +141,7 @@
 
         StateHasChanged();
     }
+    
     protected override async Task OnParametersSetAsync()
     {
         await GetNews(1);
