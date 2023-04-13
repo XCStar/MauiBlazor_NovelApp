@@ -1,5 +1,4 @@
-﻿using MauiApp3.Views;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace MauiApp3.Common
 {
     public static class RazorHelper
     {
-        public static int fontSize = 18;
+        public static int fontSize = 21;
         private static readonly StringBuilder urlStringBuilder=new StringBuilder();
         public static void GoTo(this NavigationManager navigation,string url, params string[] args)
         {
@@ -37,18 +36,6 @@ namespace MauiApp3.Common
             navigation.NavigateTo(urlStringBuilder.ToString(),false,true);
 
         }
-        public static async Task GoToWebView(this Application application, string url)
-        {
-
-
-            //await application.MainPage.Navigation.PushAsync(new WebContainer(url));
-            var current = application.MainPage;
-            application.MainPage = new NavigationPage(current);
-            await application.MainPage.Navigation.PushAsync(new WebContainer(url)
-            {
-                Title = "网页"
-            });
-
-        }
+       
     }
 }

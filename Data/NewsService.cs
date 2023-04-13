@@ -113,6 +113,15 @@ public class NewsService
             {
                 var data = new News();
                 data.link = item.Attributes["href"].Value;
+                if (id == 132)
+                {
+                    var client = httpClientFactory.CreateClient("top");
+                    //client.BaseAddress = new Uri("https://tophub.today");
+                    client.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.20");
+                    var linkHtml = await client.GetStringAsync(data.link);
+                    var  linkDocument = parser.ParseDocument(linkHtml);
+                    data.link = "https://toutiao.io" + linkDocument.QuerySelector(".title>a").GetAttribute("href");
+                }
                 data.title = item.QuerySelector("span.t").TextContent;
                 data.extra = item.QuerySelector("span.e").TextContent;
                 list.Add(data);

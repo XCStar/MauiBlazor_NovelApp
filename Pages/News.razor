@@ -23,7 +23,7 @@
 </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(132,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">开发者头条</button>
-        </li
+        </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(54,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">GitHub</button>
         </li>
@@ -90,7 +90,7 @@
                     {
                        @* var url = item.link;
                         <li class="list-group-item"><a class="link-primary" style="text-decoration:none" @onclick="@(e=>GotWebView(url))" @onclick:preventDefault href="@item.link">@item.title</a><span class="badge bg-danger">@(item.extra)</span></li>
-                        *@ 
+                         *@
                         <li class="list-group-item"><a class="link-primary" style="text-decoration:none"  href="@item.link">@item.title</a><span class="badge bg-danger">@(item.extra)</span></li>
                     }
 
@@ -148,11 +148,8 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await GetNews(1);
+        await GetNews(132,false);
     }
-    public async Task GotWebView(string url)
-    {
-        await Application.Current.GoToWebView(url);
-    }
+   
 
 }

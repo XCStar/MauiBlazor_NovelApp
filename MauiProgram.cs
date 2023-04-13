@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using MauiApp3.Data;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+
 using Microsoft.Maui.LifecycleEvents;
 using System.Text;
 
@@ -61,6 +61,7 @@ public static class MauiProgram
                 };
 
             });
+            builder.Services.AddSingleton<MainPage>();
             builder.Services.AddHttpClient("top").ConfigurePrimaryHttpMessageHandler(() =>
             {
                 return new HttpClientHandler
@@ -70,10 +71,19 @@ public static class MauiProgram
                 };
 
             });
+            builder.Services.AddHttpClient("bqg").ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Brotli
+
+                };
+
+            }); 
             builder.Services.AddSingleton<SoduService>();
+            builder.Services.AddSingleton<BQGService>();
             builder.Services.AddSingleton<IFileSystem>(FileSystem.Current);
             builder.Services.AddSingleton<NewsService>();
-            // builder.Services.AddSingleton<INavigationService, MauiNavigationService>()
             return builder.Build();
         }
         catch (Exception ex)

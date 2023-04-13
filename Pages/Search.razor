@@ -22,10 +22,11 @@
                 {
                     @foreach (var item in novelPageInfo.Infos)
                     {
-
+                        <li>
                         <p class="lead" @onclick=@(e=>Navigation.GoTo("/detial",item.Url,item.NovleId,item.Name,item.Url))><strong>@item.Name</strong></p>
                             <p>@item.LastChapter</p>
                             <p>@item.UpdateTime</p>
+                        </li>
                     }
                 }
 

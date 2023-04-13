@@ -227,12 +227,12 @@ namespace MauiApp3.Data
                     chapter.Url = aNode.Attributes["href"].Value;   
                     novelInfo.Chapters.Add(chapter);
                 }
-               var optionNodes= document.QuerySelectorAll("select.select option");
-               var value= optionNodes[optionNodes.Length-1].TextContent;
-               var total= Regex.Match(value, @"\d+").Value;
+                var optionNodes = document.QuerySelectorAll("select.select option");
+                var value = optionNodes[optionNodes.Length - 1].TextContent;
+                var total = Regex.Match(value, @"\d+").Value;
                 if (int.TryParse(total, out int v))
                 {
-                    novelInfo.TotalPage= v;
+                    novelInfo.TotalPage = v;
                 }
 
             }
@@ -380,11 +380,7 @@ namespace MauiApp3.Data
             var sql = new SQLiteAsyncConnection(conncetString);
             {
                var row= await sql.Table<Records>().DeleteAsync(x => Ids.Contains(x.id));
-                //for (int i = 0; i < Ids.Count; i++)
-                //{
-
-                //    var row = await sql.DeleteAsync(Ids[Ids[i]]);
-                //}
+               
                 return row>0;
             }
         }

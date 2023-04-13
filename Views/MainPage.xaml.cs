@@ -1,9 +1,18 @@
-﻿namespace MauiApp3;
+﻿using Microsoft.AspNetCore.Components.WebView;
+using System.Threading;
+namespace MauiApp3;
 
 public partial class MainPage : ContentPage
 {
-	public MainPage()
+    
+    public MainPage()
 	{
-		   InitializeComponent();
+		 InitializeComponent();
+
+    }
+    public void BlazorUrlLoading(object sender, UrlLoadingEventArgs e)
+	{
+		
+		e.UrlLoadingStrategy = UrlLoadingStrategy.OpenInWebView;
 	}
 }
