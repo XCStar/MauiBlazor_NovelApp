@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using MauiApp3.Data;
-using Microsoft.Extensions.DependencyInjection;
-
 using Microsoft.Maui.LifecycleEvents;
 using System.Text;
-
+using Microsoft.Maui.Handlers;
+#if ANDROID
+using Android.Webkit;
+using Android.Content;
+using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+#endif
 namespace MauiApp3;
 
 public static class MauiProgram
@@ -30,7 +33,14 @@ public static class MauiProgram
 #endif
 
 
+                }).
+                ConfigureMauiHandlers(x =>
+                {
+#if ANDROID
+                    x.AddHandler(typeof(Android.Webkit.WebView),typeof(MltWebViewRenderer));
+#endif
                 })
+
                 ;
 
             builder.Services.AddMauiBlazorWebView();
@@ -107,3 +117,34 @@ public static class MauiProgram
 	}
     
 }
+#if ANDROID
+public class MltWebViewRenderer : WebViewHandler
+{
+    protected override Android.Webkit.WebView CreatePlatformView()
+    {
+
+        PlatformView.SetWebViewClient(new MltWebViewClient());
+        global::Android.Webkit.WebView.SetWebContentsDebuggingEnabled(true);
+        return base.CreatePlatformView();
+    }
+}
+
+public class MltWebViewClient : global::Android.Webkit.WebViewClient
+{
+    public MltWebViewClient()
+    {
+    }
+
+    public override bool ShouldOverrideUrlLoading(global::Android.Webkit.WebView view, IWebResourceRequest request)
+    {
+        view.Settings.SetSupportMultipleWindows(false);
+        view.Settings.JavaScriptCanOpenWindowsAutomatically = true;
+
+        view.Settings.JavaScriptEnabled = true;
+
+        view.SetWebChromeClient(new WebChromeClient());
+
+        return base.ShouldOverrideUrlLoading(view, request);
+    }
+}
+#endif

@@ -9,7 +9,8 @@ public partial class App : Application
 	public App(MainPage mainPage,SoduService soduService)
 	{
         InitializeComponent();
-        MainPage = mainPage;
+        var navigationPage =new NavigationPage(mainPage);
+        MainPage = navigationPage;
         _timer = new Timer(s => {
             if (s is not null && s is SoduService service)
             {

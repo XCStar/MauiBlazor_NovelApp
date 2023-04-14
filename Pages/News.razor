@@ -1,4 +1,4 @@
-﻿@page "/news"
+﻿@page "/news/{id:int?}/{flag:bool?}"
 @using MauiApp3.Model;
 @using MauiApp3.Data;
 @using MauiApp3.Common;
@@ -10,80 +10,10 @@
     <NavLink href="/index/1" class="btn text-nowrap btn-sm btn-block btn-outline-primary">小说</NavLink>
     <NavLink href="/records" class="btn text-nowrap btn-sm btn-block btn-outline-primary">历史记录</NavLink>
 </div>
-<div class="container mb-2">
-<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-<li class="nav-item" role="presentation">
-<button class="nav-link" id="pills-z-tab" @onclick="@(e=>GetNews(1))" data-bs-toggle="pill" data-bs-target="#pills-z" type="button" role="tab" aria-controls="pills-z" aria-selected="true">知    乎</button>
-</li>
-<li class="nav-item" role="presentation">
-        <button class="nav-link" id="pills-w-tab" @onclick="@(e=>GetNews(3))" data-bs-toggle="pill" data-bs-target="#pills-w" type="button" role="tab" aria-controls="pills-w" aria-selected="false">微博</button>
-</li>
-<li class="nav-item" role="presentation">
-        <button class="nav-link" id="pills-t-tab" @onclick="@(e=>GetNews(69))" data-bs-toggle="pill" data-bs-target="#pills-t" type="button" role="tab" aria-controls="pills-t" aria-selected="false">今日头条</button>
-</li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(132,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">开发者头条</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(54,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">GitHub</button>
-        </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(89,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">看    雪</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(327,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">安 全 客</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(326,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">FreeBuf</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(2,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">百    度</button>
-        </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(18))" data-bs-toggle="pill" data-bs-target="#pills-b" type="button" role="tab" aria-controls="pills-b" aria-selected="false">  B站  </button>
-    </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(12))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">开源中国</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(6))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">  IT之家</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(68,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">  52破解</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(221,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">抖    音</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(5832,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">起    点</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(5846,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">纵    横</button>
-        </li>
-         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(125,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">知乎日报</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(289,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">开    眼</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(369,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">历史上今天</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(137,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false"> 少数派 </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(11,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">  36  氪</button>
-        </li>
-         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-b-tab" @onclick="@(e=>GetNews(46,false))" data-bs-toggle="pill" data-bs-target="#pills-k" type="button" role="tab" aria-controls="pills-k" aria-selected="false">天     涯</button>
-        </li>
-</ul>
 <div class="tab-content" id="pills-tabContent">
         @if (news != null && news.Count > 0)
         {
-            var suffix = dic[itemId];
-            <div class="tab-pane fade show active" id="pills-@suffix" role="tabpanel" aria-labelledby="pills-@suffix-tab">
+            <div class="tab-pane fade show active" >
                 <ul class="list-group list-group-flush">
 
                     @foreach (var item in news)
@@ -102,22 +32,12 @@
         {
             <p>@Message</p>
         }
-
-</div>
 </div>
 @code {
-    public int itemId = 1;
     public IList<MauiApp3.Data.News> news;
     public string Message="数据正在加载....";
-    public static Dictionary<int, string> dic = new Dictionary<int, string>()
-    {
-      {1,"z" },
-      {3,"w" },
-      {69,"t" },
-      {18,"b" },
-      {6,"k" },
-
-    };
+    [Parameter] public int id { get; set; }
+    [Parameter] public bool flag { get; set; }
     public async Task GetNews(int id,bool flag=true)
     {
         try
@@ -148,7 +68,13 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await GetNews(132,false);
+        if (id==0)
+        {
+            id = 132;
+            flag = false;
+        }
+        await GetNews(id, flag);
+        
     }
    
 
