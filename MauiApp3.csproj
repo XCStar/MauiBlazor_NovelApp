@@ -79,4 +79,19 @@
         <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.4" />
         <PackageReference Include="SQLitePCLRaw.provider.sqlite3" Version="2.1.4" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\WebContainerPage.xaml.cs">
+        <DependentUpon>WebContainerPage.xaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <MauiXaml Update="Views\AppShell.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </MauiXaml>
+      <MauiXaml Update="Views\WebContainerPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </MauiXaml>
+    </ItemGroup>
 </Project>

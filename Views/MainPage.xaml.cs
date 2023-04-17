@@ -2,7 +2,7 @@
 #if WINDOWS
 using Microsoft.Web.WebView2;
 #endif
-namespace MauiApp3;
+namespace MauiApp3.Views;
 public partial class MainPage : ContentPage
 {
 
@@ -29,7 +29,6 @@ public partial class MainPage : ContentPage
 
     private void blazorWebView_BlazorWebViewInitialized(object sender, BlazorWebViewInitializedEventArgs e)
     {
-
 
 
 #if ANDROID

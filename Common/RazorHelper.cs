@@ -24,18 +24,9 @@ namespace MauiApp3.Common
             navigation.NavigateTo(urlStringBuilder.ToString());
 
         }
-        public static void GoToReplace(this NavigationManager navigation, string url, params string[] args)
+        public static async Task OpenInWebView(this NavigationManager manager, string url)
         {
-            urlStringBuilder.Clear();
-            urlStringBuilder.Append(url);
-            if (args.Length > 0)
-            {
-                urlStringBuilder.Append("/");
-                urlStringBuilder.Append(string.Join("/", args.Select(x => UrlEncoder.Default.Encode(x))));
-            }
-            navigation.NavigateTo(urlStringBuilder.ToString(),false,true);
-
+            await Shell.Current.GoToAsync($"{nameof(MauiApp3.Views.WebContainerPage)}?url={UrlEncoder.Default.Encode(url)}");
         }
-       
     }
 }

@@ -3,6 +3,7 @@ using MauiApp3.Data;
 using Microsoft.Maui.LifecycleEvents;
 using System.Text;
 using Microsoft.Maui.Handlers;
+using MauiApp3.Views;
 #if ANDROID
 using Android.Webkit;
 using Android.Content;
@@ -71,7 +72,7 @@ public static class MauiProgram
                 };
 
             });
-            builder.Services.AddSingleton<MainPage>();
+           
             builder.Services.AddHttpClient("top").ConfigurePrimaryHttpMessageHandler(() =>
             {
                 return new HttpClientHandler
@@ -89,7 +90,8 @@ public static class MauiProgram
 
                 };
 
-            }); 
+            });
+            builder.Services.AddSingleton<AppShell>();
             builder.Services.AddSingleton<SoduService>();
             builder.Services.AddSingleton<BQGService>();
             builder.Services.AddSingleton<IFileSystem>(FileSystem.Current);
