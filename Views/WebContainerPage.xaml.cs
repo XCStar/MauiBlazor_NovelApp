@@ -7,7 +7,7 @@ namespace MauiApp3.Views;
 [QueryProperty(nameof(Url),"url")]
 public partial class WebContainerPage : ContentPage
 {
-	private static readonly string zhiHuJavaSrcitpt = @"
+	private static readonly string userAgentScript = @"
 Object.defineProperties(window.navigator, {
   'userAgent': {
     enumerable: true,
@@ -22,22 +22,23 @@ Object.defineProperties(window.navigator, {
     value: 'Win32'
   }
     });
+";
+	private static readonly string zhiHuJavaSrcitpt = @"
 function remove(sel) {document.querySelectorAll(sel).forEach( a => a.remove());};
 remove(""DIV.AdvertImg.AdvertImg--isLoaded.MBannerAd-image"");
 remove(""DIV.Banner-adTag"");
 remove(""div.MBannerAd-third"");
 remove(""a.MHotFeedAd"");
 remove(""div.Pc-feedAd-container.Pc-feedAd-container--mobile"");
-remove("".Banner-adTag"");
 remove("".WeiboAd-wrap"");
 remove(""div.AdBelowMoreAnswers"");
 remove(""div.OpenInAppButton"");
 remove("".KfeCollection-VipRecommendCard"");
-remove("".AdBelowMoreAnswers"");
 remove(""div.MHotFeedAd-smallCard"");
 remove('div[style = ""margin - bottom: 10px;""]');
+remove('div.OpenInAppButton');
 document.querySelector('.MBannerAd').parentNode.remove();
-document.querySelectorAll(""a.HotQuestionsItem"").forEach(a=>a.onClick=null);
+document.querySelectorAll(""a.HotQuestionsItem"").forEach(a=>a.onclick=function(){});
 window.alert(""clear"");
 ";
 	public WebContainerPage()
@@ -87,7 +88,7 @@ window.alert(""clear"");
 
         if (e.Url.Contains("zhihu.com"))
         {
-            await webView.EvaluateJavaScriptAsync(zhiHuJavaSrcitpt.Replace("\r\n", ""));
+            await webView.EvaluateJavaScriptAsync(userAgentScript.Replace("\r\n", ""));
         }
         this.CurrentUrl = e.Url;
     }
@@ -108,9 +109,11 @@ window.alert(""clear"");
 
     private  async void webView_Navigated(object sender, WebNavigatedEventArgs e)
     {
+		
 		if (e.Url.Contains("zhihu.com"))
-		{
-			await webView.EvaluateJavaScriptAsync(zhiHuJavaSrcitpt.Replace("\r\n",""));
+        {
+            await webView.EvaluateJavaScriptAsync(userAgentScript.Replace("\r\n", ""));
+            await webView.EvaluateJavaScriptAsync(zhiHuJavaSrcitpt.Replace("\r\n",""));
 		}
     }
 }

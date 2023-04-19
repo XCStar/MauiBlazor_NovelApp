@@ -114,9 +114,9 @@ else
                 {
                     Navigation.GoTo("/detial", url, NovelId, NovelName, NovelAddr, v.ToString());
                 }
-               
+
             }
-          
+
         }
     }
     protected override async Task OnParametersSetAsync()
@@ -125,7 +125,7 @@ else
         {
             await js.InvokeVoidAsync("loading", true);
             novelInfo = await soduService.GetNovel(url, pageNum.HasValue ? pageNum.Value : 0);
-           
+
         }
         catch (Exception ex)
         {
@@ -138,7 +138,7 @@ else
         }
 
     }
-   
+
     public void GoToNext(MouseEventArgs e, int page)
     {
         try
@@ -147,7 +147,7 @@ else
         }
         catch (Exception ex)
         {
-
+            Message = ex.Message;
             throw;
         }
 

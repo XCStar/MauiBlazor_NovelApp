@@ -3,7 +3,6 @@ using MauiApp3.Data;
 using Microsoft.Maui.LifecycleEvents;
 using System.Text;
 using Microsoft.Maui.Handlers;
-using MauiApp3.Views;
 #if ANDROID
 using Android.Webkit;
 using Android.Content;
@@ -37,8 +36,10 @@ public static class MauiProgram
                 }).
                 ConfigureMauiHandlers(x =>
                 {
+
 #if ANDROID
-                    x.AddHandler(typeof(Android.Webkit.WebView),typeof(MltWebViewRenderer));
+
+                   // x.AddHandler(typeof(Microsoft.Maui.Controls.WebView),typeof(MltWebViewHandler));
 #endif
                 })
 
@@ -117,36 +118,40 @@ public static class MauiProgram
         }
 		
 	}
-    
+  
 }
 #if ANDROID
-public class MltWebViewRenderer : WebViewHandler
+//没什么卵用，android OnPageFinished不会响应 最新版已解决，等待更新https://github.com/dotnet/maui/pull/14321/files/bab24281ac3638d91d28a11a402e043f3a8f2378
+public class MltWebViewHandler : WebViewHandler
 {
+    
     protected override Android.Webkit.WebView CreatePlatformView()
     {
-
-        PlatformView.SetWebViewClient(new MltWebViewClient());
+        var platformView= base.CreatePlatformView();
+        platformView.SetWebViewClient(new CustomWebViewClient());
         global::Android.Webkit.WebView.SetWebContentsDebuggingEnabled(true);
-        return base.CreatePlatformView();
+        return platformView;
     }
+   
 }
 
-public class MltWebViewClient : global::Android.Webkit.WebViewClient
+public class CustomWebViewClient : global::Android.Webkit.WebViewClient
 {
-    public MltWebViewClient()
+    public CustomWebViewClient()
     {
     }
 
-    public override bool ShouldOverrideUrlLoading(global::Android.Webkit.WebView view, IWebResourceRequest request)
+    
+    public override void OnPageFinished(global::Android.Webkit.WebView view,string url)
     {
-        view.Settings.SetSupportMultipleWindows(false);
-        view.Settings.JavaScriptCanOpenWindowsAutomatically = true;
-
-        view.Settings.JavaScriptEnabled = true;
-
-        view.SetWebChromeClient(new WebChromeClient());
-
-        return base.ShouldOverrideUrlLoading(view, request);
+          Console.WriteLine($"<------------------------------{url}---------------------------->");
+          base.OnPageFinished(view,url);
+         
+          if(url.Contains("zhihu"))
+          {
+             view.LoadUrl("javascript:window.alert('===============onPageFinished==============================')");
+          }
+         
     }
 }
 #endif
