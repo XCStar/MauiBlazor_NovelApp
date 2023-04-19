@@ -45,6 +45,7 @@ else
         </div>
     <div class="col-4"></div>
     </div>
+    <div class="text-center"><h3 class="align-items-center">@novelContent.ChapterName</h3></div>
     <div style="background:#e6e6e6;font-size:@(fontSize)px">@(new MarkupString(novelContent.Content))</div>
     <div class="btn-group container">
         <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-lg btn-block btn-outline-primary mb-3">主页</a>

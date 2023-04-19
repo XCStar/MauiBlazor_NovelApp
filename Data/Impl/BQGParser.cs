@@ -21,6 +21,7 @@ namespace MauiApp3.Data.Impl
                 var chapter = new Chapter();
                 chapter.Url = chapterNode.Attributes["href"].Value;
                 chapter.Name = chapterNode.Text();
+                list.Add(chapter);
             }
             return list;
         }
@@ -57,14 +58,14 @@ namespace MauiApp3.Data.Impl
             var infoNode = document.QuerySelector("div.synopsisArea_detail");
             if (infoNode is not null)
             {
-                var pNodes = infoNode.ChildNodes;
-                if (pNodes.Count() == 6)
+                var pNodes = infoNode.QuerySelectorAll("p") ;
+                if (pNodes.Count() == 5)
                 {
-                    novelInfo.Author = pNodes.ElementAt(1).Text().Replace("作者：", "");
-                    novelInfo.NovelType= pNodes.ElementAt(2).Text().Replace("类别：", "");
-                    novelInfo.UpdateState = pNodes.ElementAt(3).Text().Replace("状态", "");
-                    novelInfo.LastChapter = pNodes.ElementAt(4).Text();
-                    novelInfo.UpdateTime = pNodes.ElementAt(5).Text();
+                    novelInfo.Author = pNodes.ElementAt(0).Text().Replace("作者：", "");
+                    novelInfo.NovelType= pNodes.ElementAt(1).Text().Replace("类别：", "");
+                    novelInfo.UpdateState = pNodes.ElementAt(2).Text().Replace("状态", "");
+                    novelInfo.LastChapter = pNodes.ElementAt(3).Text();
+                    novelInfo.UpdateTime = pNodes.ElementAt(4).Text();
                 }
             }
             var descrptionNode = document.QuerySelector("p.review");

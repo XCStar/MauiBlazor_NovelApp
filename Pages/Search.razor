@@ -1,4 +1,4 @@
-﻿@page "/search/{searchText?}"
+﻿@page "/search/{type}/{searchText?}"
 @using MauiApp3.Common;
 @using MauiApp3.Data;
 @using MauiApp3.Model;
@@ -10,7 +10,7 @@
 @inject NavigationManager Navigation;
 @inject IJSRuntime js;
 <div class="container">
-    <NavLink href="/index" class="btn btn-lg btn-block btn-outline-primary">首页</NavLink>
+    <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-lg btn-block btn-outline-primary">首页</a>
 
     <NavLink href="/records" class="btn btn-lg btn-block btn-outline-primary">历史记录</NavLink>
 </div>
@@ -25,7 +25,7 @@
                     @foreach (var item in novelPageInfo.Infos)
                     {
                         <li>
-                        <p class="lead" @onclick=@(e=>Navigation.GoTo("/detial",item.Url,item.NovleId,item.Name,item.Url))><strong>@item.Name</strong></p>
+                        <p class="lead" @onclick=@(e=>Navigation.GoTo("/detial",type,item.Url,item.NovleId,item.Name,item.Url))><strong>@item.Name</strong></p>
                             <p>@item.LastChapter</p>
                             <p>@item.UpdateTime</p>
                         </li>
@@ -44,6 +44,8 @@
 @code {
     [Parameter]
     public string searchText { get; set; }
+    [Parameter]
+    public string type { get; set; }
     public string Message = "loading......";
     private NovelPageInfo novelPageInfo;
     protected override async Task OnParametersSetAsync()

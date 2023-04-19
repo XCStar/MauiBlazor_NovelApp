@@ -2,26 +2,18 @@
 using MauiApp3.Common;
 using MauiApp3.Data.Interfaces;
 using MauiApp3.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 namespace MauiApp3.Data.Impl
 {
 
     public class BQGService : INovelDataService
     {
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly HttpClient client;
         private readonly IPageParser pageParser;
-        public BQGService(IHttpClientFactory httpClientFactory, Func<Type,IPageParser> parserFunc)
+        private readonly string baseUrl = "https://m.beqege.cc";
+        public BQGService(IHttpClientFactory httpClientFactory, Func<Type, IPageParser> parserFunc)
         {
             this.httpClientFactory = httpClientFactory;
-            client = httpClientFactory.CreateClient("bqg");
-            client.BaseAddress = new Uri(@"https://m.beqege.cc");
+            
             this.pageParser = parserFunc(typeof(BQGParser));
         }
 
@@ -29,21 +21,21 @@ namespace MauiApp3.Data.Impl
         {
             var novelContent = new NovelContent();
             var html = string.Empty;
-            if (string.IsNullOrEmpty(html))
+            
+            try
+            {
+                var client = httpClientFactory.CreateClient("bqg");
+                client.BaseAddress = new Uri(baseUrl);
+                AddRequestHeader(client);
+                html = await client.GetStringAsync(url);
+
+            }
+            catch (Exception ex)
             {
 
-                AddRequestHeader();
-                try
-                {
-                    html = await client.GetStringAsync(url);
-                  
-                }
-                catch (Exception ex)
-                {
-
-                    throw ex;
-                }
+                throw ex;
             }
+
             if (!string.IsNullOrEmpty(html))
             {
                 try
@@ -61,7 +53,7 @@ namespace MauiApp3.Data.Impl
                     {
                         novelContent.ChapterName = "最后阅读章节";
                     }
-                    await DBHelper.Insert(novleName, novelId, novelAddr, novelContent.ChapterName, url,"bqg");
+                    await DBHelper.Insert(novleName, novelId, novelAddr, novelContent.ChapterName, url, "bqg");
                 }
                 catch (Exception ex)
                 {
@@ -78,25 +70,26 @@ namespace MauiApp3.Data.Impl
 
         public async Task<NovelInfo> GetNovel(string url, int pageNum = 1)
         {
+            pageNum=pageNum==0?1 : pageNum;
             var novelInfo = new NovelInfo();
-            if (pageNum > 1)
+            if (pageNum == 2)
             {
-                url = url + "/index_all.html";
+                url = url + "index_all.html";
             }
             novelInfo.CurrentPage = pageNum;
-            var html = FileCacheHelper.Get(url);
-            if (string.IsNullOrEmpty(html))
+            var html = string.Empty;
+            try
             {
-                AddRequestHeader();
-                try
-                {
-                    html = await client.GetStringAsync(url);
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+                var client = httpClientFactory.CreateClient("bqg");
+                client.BaseAddress = new Uri(baseUrl);
+                AddRequestHeader(client);
+                html = await client.GetStringAsync(url);
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
             var document = pageParser.LoadDocument(html);
             if (document == null)
             {
@@ -106,7 +99,7 @@ namespace MauiApp3.Data.Impl
             {
                 novelInfo = pageParser.ParseNovel(document);
             }
-            
+
             novelInfo.Chapters = pageParser.ParseChapters(document);
             novelInfo.TotalPage = pageParser.ParseNovelPageCount(document);
             return novelInfo;
@@ -122,9 +115,11 @@ namespace MauiApp3.Data.Impl
             var pageInfo = new NovelPageInfo();
             var url = string.Format("/", pageNum);
             var html = string.Empty;
-            AddRequestHeader();
             try
             {
+                var client = httpClientFactory.CreateClient("bqg");
+                client.BaseAddress = new Uri(baseUrl);
+                AddRequestHeader(client);
                 html = await client.GetStringAsync(url);
             }
             catch (Exception ex)
@@ -147,12 +142,12 @@ namespace MauiApp3.Data.Impl
 
         }
 
-        private void AddRequestHeader()
+        private void AddRequestHeader(HttpClient client)
         {
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/113.0.0.0");
             client.DefaultRequestHeaders.Add("Cookie", "cf_clearance=bQo9beEWy_SSxhSW.pYnvuWrYi1La0xzpF4XGAHcPs8-1681896870-0-160; __cf_bm=zSuMYIfg3abeXF3S3JN6pXrUCLaYZr8EE4EFRSySPP4-1681901648-0-AQTzNf/YuXey57mkcyl7mQ0t7iBEkl2nj+Glwl/09Dzr6xxutEmzXXNRdLvEKzVe5jgyk2okKEGpin6Et7ZO56hl8LRTgoyUn7vAxw4FKdSc");
             client.DefaultRequestHeaders.Add("Accept-Agent", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-            client.DefaultRequestHeaders.Add("refer", "https://m.beqege.cc/");
+            client.DefaultRequestHeaders.Add("rerfer", "https://m.beqege.cc/");
         }
     }
 }

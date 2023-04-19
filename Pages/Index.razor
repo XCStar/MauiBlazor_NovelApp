@@ -23,7 +23,7 @@ else
         <form>
             <div class="form-group mx-sm-3  mt-3">
                 <input type="text" class="form-control mb-3" @bind="searchText" placeholder="输入小说名称">
-                <button type="submit" class="btn btn-primary  float-end mr-2" @onclick=@(e=>Navigation.GoTo("/search",searchText)) @onclick:preventDefault>搜索</button>
+                <button type="submit" class="btn btn-primary  float-end mr-2" @onclick=@(e=>Navigation.GoTo($"/search",type,searchText)) @onclick:preventDefault>搜索</button>
             </div>
 
         </form>
