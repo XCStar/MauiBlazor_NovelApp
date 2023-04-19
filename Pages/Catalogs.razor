@@ -1,23 +1,26 @@
-﻿@page "/catalogs/{url}/{NovelId}/{NovelName}/{NovelAddr}/{rand?}"
+﻿@page "/catalogs/{type}/{url}/{NovelId}/{NovelName}/{NovelAddr}/{rand?}"
 @using MauiApp3.Common;
 @using MauiApp3.Data;
 @using System.Text.Encodings.Web;
 @using System.Text;
+@using MauiApp3.Data.Impl;
+@using MauiApp3.Data.Interfaces;
+@inject Func<Type,INovelDataService> dataServiceFunc;
 @inject NavigationManager Navigation
-@inject SoduService soduService;
+
 @inject IJSRuntime js;
 @if (novelContent == null)
 {
      <div class="btn-group container">
-        <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary  mt-2">主页</NavLink>
+        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-lg btn-block btn-outline-primary  mt-2">主页</a>
         <NavLink href="/records" class="btn btn-lg btn-block btn-outline-primary  mt-2">历史记录</NavLink>
         @if (!string.IsNullOrEmpty(NovelAddr))
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",NovelAddr,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mt-2">目录</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",type,NovelAddr,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mt-2">目录</a>
         }
         @if (!string.IsNullOrEmpty(url)&&showRefresh)
         {
-            <div @onclick=@(e=>Navigation.GoTo("/catalogs",url,NovelId,NovelName,NovelAddr,Guid.NewGuid().ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mt-2">刷新</div>
+            <div @onclick=@(e=>Navigation.GoTo("/catalogs",type,url,NovelId,NovelName,NovelAddr,Guid.NewGuid().ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mt-2">刷新</div>
         }
      </div>
     <p>@Message</p>
@@ -25,11 +28,11 @@
 else
 {
     <div class="btn-group container">
-        <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary  mt-2">主页</NavLink>
+        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-lg btn-block btn-outline-primary  mt-2">主页</a>
         <NavLink href="/records" class="btn btn-lg btn-block btn-outline-primary  mt-2">历史记录</NavLink>
         @if (!string.IsNullOrEmpty(novelContent.Next))
         {
-            <a @onclick=@(e=>Navigation.GoTo("/catalogs",novelContent.Next,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mt-2">下一页</a>
+            <a @onclick=@(e=>Navigation.GoTo("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mt-2">下一页</a>
         }
     </div>
     <div class="row mt-1 mb-1" >
@@ -44,19 +47,20 @@ else
     </div>
     <div style="background:#e6e6e6;font-size:@(fontSize)px">@(new MarkupString(novelContent.Content))</div>
     <div class="btn-group container">
-        <NavLink href="/index/1" class="btn btn-lg btn-block btn-outline-primary mb-3">主页</NavLink>
+        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-lg btn-block btn-outline-primary mb-3">主页</a>
          @if (!string.IsNullOrEmpty(NovelAddr))
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",NovelAddr,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mb-3">目录</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",type,NovelAddr,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mb-3">目录</a>
         }
        
         @if (!string.IsNullOrEmpty(novelContent.Next))
         {
-            <a @onclick=@(e=>Navigation.GoTo("/catalogs",novelContent.Next,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mb-3">下一页</a>
+            <a @onclick=@(e=>Navigation.GoTo("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mb-3">下一页</a>
         }
     </div>
 }
 @code {
+    [Parameter] public string type { get; set; }
     [Parameter]
     public string url {get;set;}
     [Parameter]
@@ -78,7 +82,17 @@ else
         {
             await js.InvokeVoidAsync("loading", true);
             novelContent = null;
-            novelContent = await soduService.GetChapter(url, NovelId, NovelName, NovelAddr);
+            INovelDataService service;
+            if (type == "sodu")
+            {
+                service = dataServiceFunc(typeof(SoduService));
+            }
+            else
+            {
+                service = dataServiceFunc(typeof(BQGService));
+                
+            }
+            novelContent = await service.GetChapter(url, NovelId, NovelName, NovelAddr);
 
         }
         catch (Exception ex)

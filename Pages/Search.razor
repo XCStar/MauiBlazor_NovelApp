@@ -4,7 +4,9 @@
 @using MauiApp3.Model;
 @using System.Text;
 @using System.Text.Encodings.Web;
-@inject SoduService soduService;
+@using MauiApp3.Data.Impl;
+@using MauiApp3.Data.Interfaces;
+@inject Func<Type,INovelDataService> dataService;
 @inject NavigationManager Navigation;
 @inject IJSRuntime js;
 <div class="container">
@@ -52,7 +54,7 @@
             {
                 await js.InvokeVoidAsync("loading", true);
                 novelPageInfo = null;
-                novelPageInfo = await soduService.Search(searchText);
+                novelPageInfo = await dataService(typeof(SoduService)).Search(searchText);
             }
             catch (Exception ex)
             {

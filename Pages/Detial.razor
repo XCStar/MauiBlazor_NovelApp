@@ -1,15 +1,17 @@
-﻿@page "/detial/{url}/{NovelId}/{NovelName}/{NovelAddr}/{pageNum:int?}"
+﻿@page "/detial/{type}/{url}/{NovelId}/{NovelName}/{NovelAddr}/{pageNum:int?}"
 @using MauiApp3.Common;
 @using MauiApp3.Data;
 @using System.Text.Encodings.Web;
 @using System.Text;
+@using MauiApp3.Data.Impl;
+@using MauiApp3.Data.Interfaces;
+@inject Func<Type,INovelDataService> dataServiceFunc;
 @inject NavigationManager Navigation;
-@inject SoduService soduService;
 @inject IJSRuntime js;
 @if (novelInfo == null)
 {
     <div class="btn-group  container">
-        <NavLink href="/index/1" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">主页</NavLink>
+        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">主页</a>
         <NavLink href="/records" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">历史记录</NavLink>
     </div>
     <p>@Message</p>
@@ -18,20 +20,20 @@ else
 {
     <p>当前页：@pageNum</p>
     <div class="btn-group  container">
-        <NavLink href="/index/1" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">主页</NavLink>
+        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">主页</a>
         <NavLink href="/records" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">历史记录</NavLink>
 
         @if (novelInfo.CurrentPage > 1)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">上一页(@(novelInfo.CurrentPage - 1))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">上一页(@(novelInfo.CurrentPage - 1))</a>
         }
         @if (novelInfo.CurrentPage < novelInfo.TotalPage)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">尾页(@(novelInfo.TotalPage))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">尾页(@(novelInfo.TotalPage))</a>
         }
         @if (novelInfo.CurrentPage < novelInfo.TotalPage)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">下一页(@(novelInfo.CurrentPage + 1))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">下一页(@(novelInfo.CurrentPage + 1))</a>
         }
     </div>
     <div class="row container text-center mt-3">
@@ -49,7 +51,7 @@ else
     {
         <li class="media text-muted pt-3">
             <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray align-middle">
-                    <a @onclick=@(e=>Navigation.GoTo("/catalogs",item.Url,NovelId,NovelName,NovelAddr)) @onclick:preventDefault>
+                    <a @onclick=@(e=>Navigation.GoTo("/catalogs",type,item.Url,NovelId,NovelName,NovelAddr)) @onclick:preventDefault>
                     <strong class="d-block text-gray-dark">@item.Name</strong>
                 </a>
             </p>
@@ -58,20 +60,20 @@ else
     }
     </ul>
     <div class="btn-group container">
-        <NavLink href="/index/1" class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">主页</NavLink>
+        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">主页</a>
 
         @if (novelInfo.CurrentPage > 1)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">上一页(@(novelInfo.CurrentPage - 1))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">上一页(@(novelInfo.CurrentPage - 1))</a>
         }
         @if (novelInfo.CurrentPage < novelInfo.TotalPage)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">尾页(@(novelInfo.TotalPage))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">尾页(@(novelInfo.TotalPage))</a>
         }
 
         @if (novelInfo.CurrentPage < novelInfo.TotalPage)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">下一页(@(novelInfo.CurrentPage + 1))</a>
+            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">下一页(@(novelInfo.CurrentPage + 1))</a>
         }
     </div>
     @if (novelInfo.TotalPage > 1)
@@ -91,6 +93,7 @@ else
 
 
 @code {
+    [Parameter] public string type { get; set; }
     [Parameter]
     public string url { get; set; }
     [Parameter]
@@ -112,7 +115,7 @@ else
             {
                 if (v != novelInfo.CurrentPage)
                 {
-                    Navigation.GoTo("/detial", url, NovelId, NovelName, NovelAddr, v.ToString());
+                    Navigation.GoTo("/detial",type, url, NovelId, NovelName, NovelAddr, v.ToString());
                 }
 
             }
@@ -124,7 +127,17 @@ else
         try
         {
             await js.InvokeVoidAsync("loading", true);
-            novelInfo = await soduService.GetNovel(url, pageNum.HasValue ? pageNum.Value : 0);
+            INovelDataService service;
+            if (type == "sodu")
+            {
+                service = dataServiceFunc(typeof(SoduService));
+            }
+            else
+            {
+                service = dataServiceFunc(typeof(BQGService));
+
+            }
+            novelInfo = await service.GetNovel(url, pageNum.HasValue ? pageNum.Value : 0);
 
         }
         catch (Exception ex)
@@ -143,7 +156,7 @@ else
     {
         try
         {
-            Navigation.NavigateTo($"/detial/{UrlEncoder.Default.Encode(url)}/{NovelId}/{UrlEncoder.Default.Encode(NovelName)}/{UrlEncoder.Default.Encode(NovelAddr)}/{page}");
+            Navigation.NavigateTo($"/detial/{type}/{UrlEncoder.Default.Encode(url)}/{NovelId}/{UrlEncoder.Default.Encode(NovelName)}/{UrlEncoder.Default.Encode(NovelAddr)}/{page}");
         }
         catch (Exception ex)
         {

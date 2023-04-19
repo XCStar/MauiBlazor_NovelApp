@@ -15,7 +15,7 @@ namespace MauiApp3.Model
         public string novelid { get; set; }
        public string novelname { get; set; }
         public string noveladdr { get; set; }
-        
+        public string srcType { get; set; }
         public string chaptername { get; set; }
         public string chapteraddr { get; set; }
     }

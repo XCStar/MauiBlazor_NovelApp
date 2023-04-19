@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using MauiApp3.Common;
 @using MauiApp3.Data;
+@using MauiApp3.Data.Impl;
 @inject NavigationManager Navigation;
 @inject SoduService soduService;
 @inject IJSRuntime js;
@@ -9,7 +10,7 @@
     <a @onclick=@(e=>Navigation.GoTo("/newsweb")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>今日头条</a>
 </div>
 <div class="row">
-<a @onclick=@(e=>Navigation.GoTo("/index","1")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>主  页</a>
+    <a @onclick=@(e=>Navigation.GoTo("/novels")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>小 说</a>
 </div>
 <div class="row">
 <a @onclick=Clear class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>清除缓存</a>
@@ -17,16 +18,13 @@
 <div class="row">
     <a @onclick=@(e=>Navigation.GoTo("/records")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>阅读记录</a>
 </div>
-@*<div class="row">
-    <a @onclick=@(e=>Navigation.GoTo("/toutiao")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>开发者头条</a>
-</div>
-*@
+
 @code {
 
 
     public async Task Clear()
     {
-        if (soduService.ClearCache())
+        if (FileCacheHelper.ClearCache())
         {
             await Application.Current.MainPage.DisplayAlert("提示","清除成功！","确认");
         }

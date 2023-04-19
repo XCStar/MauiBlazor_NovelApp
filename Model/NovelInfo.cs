@@ -10,6 +10,7 @@ namespace MauiApp3.Model
 {
     public class NovelInfo
     {
+        public string Url { get; set; }
         public string Name { get; set; }
         public string Author { get; set; }
         public string NovelType { get; set; }
@@ -17,10 +18,10 @@ namespace MauiApp3.Model
         public string UpdateTime { get; set; }
         public string Description { get; set; }
         public List<Chapter> Chapters { get; set; }
-       
         public int TotalPage { get; set; }
         public DateTime GetTime { get; set; } = DateTime.Now;
         public int CurrentPage { get; set; }
+        public string UpdateState { get; set; }
         
     }
     public class Chapter

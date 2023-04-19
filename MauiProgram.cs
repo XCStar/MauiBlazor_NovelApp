@@ -3,6 +3,8 @@ using MauiApp3.Data;
 using Microsoft.Maui.LifecycleEvents;
 using System.Text;
 using Microsoft.Maui.Handlers;
+using MauiApp3.Data.Impl;
+using MauiApp3.Data.Interfaces;
 #if ANDROID
 using Android.Webkit;
 using Android.Content;
@@ -93,6 +95,43 @@ public static class MauiProgram
 
             });
             builder.Services.AddSingleton<AppShell>();
+
+            builder.Services.AddSingleton<SoduParser>();
+            builder.Services.AddSingleton<BQGParser>();
+            builder.Services.AddSingleton(provider => {
+                Func<Type, IPageParser> accesor = key => {
+                    if (key == typeof(SoduParser))
+                    {
+                        return provider.GetService<SoduParser>();
+                    }
+                    else if (key == typeof(BQGParser))
+                    {
+                        return provider.GetService<BQGParser>();
+                    }
+                    throw new ArgumentException($"不支持的类型{key}");
+                
+                
+                };
+
+                return accesor;
+            });
+            builder.Services.AddSingleton(provider => {
+                Func<Type, INovelDataService> accesor = key => {
+                    if (key == typeof(SoduService))
+                    {
+                        return provider.GetService<SoduService>();
+                    }
+                    else if (key == typeof(BQGService))
+                    {
+                        return provider.GetService<BQGService>();
+                    }
+                    throw new ArgumentException($"不支持的类型{key}");
+
+
+                };
+
+                return accesor;
+            });
             builder.Services.AddSingleton<SoduService>();
             builder.Services.AddSingleton<BQGService>();
             builder.Services.AddSingleton<IFileSystem>(FileSystem.Current);

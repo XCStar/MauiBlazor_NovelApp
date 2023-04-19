@@ -12,6 +12,10 @@ namespace MauiApp3.Common
     {
         public static int fontSize = 21;
         private static readonly StringBuilder urlStringBuilder=new StringBuilder();
+        public static string GetIndexUrl(string type)
+        {
+            return $"index/{type}/1";
+        }
         public static void GoTo(this NavigationManager navigation,string url, params string[] args)
         {
             urlStringBuilder.Clear();

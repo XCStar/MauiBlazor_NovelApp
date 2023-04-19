@@ -7,13 +7,10 @@ using System.Threading.Tasks;
 
 namespace MauiApp3.Model
 {
-    public class UpdateNovelInfo
+    public class UpdateNovelInfo: NovelInfo
     {
-        public string Name { get; set; }
-        public string Url { get; set; }
-        public string LastChapter { get; set; }
-        public string UpdateTime { get; set; }
-        public DateTime GetTime { get; set; }=DateTime.Now;
+      
+      
         private string _id;
         public string NovleId
         {
