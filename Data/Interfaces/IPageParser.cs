@@ -18,6 +18,6 @@ namespace MauiApp3.Data.Interfaces
         List<Chapter> ParseChapters(IHtmlDocument document);
         int ParseNovelPageCount(IHtmlDocument document);
         NovelContent ParseNovelContent(IHtmlDocument document);
-
+        NovelPageInfo ParseSearchUpdateInfo(IHtmlDocument document);
     }
 }

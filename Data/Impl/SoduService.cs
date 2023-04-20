@@ -157,8 +157,6 @@ namespace MauiApp3.Data.Impl
         public async Task<NovelPageInfo> Search(string searchText)
         {
             var pageInfo = new NovelPageInfo();
-            pageInfo.CurrentPage = 0;
-            pageInfo.Infos = new List<UpdateNovelInfo>();
             var url = string.Format(serachUrl, searchText);
             string html = string.Empty;
             var client = httpClientFactory.CreateClient("sodu");
@@ -171,41 +169,19 @@ namespace MauiApp3.Data.Impl
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
 
             try
             {
-                var parser = new HtmlParser();
-                var document = parser.ParseDocument(html);
-                var list = document.QuerySelectorAll("div.list>ul>li");
-                if (list.Length > 0)
-                {
-                    //get update info
-                    foreach (var novel in list)
-                    {
-                        var novelInfo = new UpdateNovelInfo();
-                        var nameNode = novel.Children[0];
-                        novelInfo.Name = nameNode.TextContent;
-                        novelInfo.Url = nameNode.Attributes["href"].Value;
-                        var chapterNode = novel.Children[1];
-                        novelInfo.LastChapter = chapterNode.TextContent;
-                        var timeNode = novel.Children[2];
-                        novelInfo.UpdateTime = timeNode.TextContent;
-                        pageInfo.Infos.Add(novelInfo);
-
-                    }
-                }
-
+                var document= pageParser.LoadDocument(html);
+                pageInfo=pageParser.ParseSearchUpdateInfo(document);
+                pageInfo.CurrentPage = 1;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
-
-
             return pageInfo;
             //get next pages
 

@@ -112,5 +112,31 @@ namespace MauiApp3.Data.Impl
             }
             return pageInfo;
         }
+
+        public NovelPageInfo ParseSearchUpdateInfo(IHtmlDocument document)
+        {
+            var pageInfo = new NovelPageInfo();
+            pageInfo.CurrentPage = 0;
+            pageInfo.Infos = new List<UpdateNovelInfo>();
+            var list = document.QuerySelectorAll("div.list>ul>li");
+            if (list.Length > 0)
+            {
+                //get update info
+                foreach (var novel in list)
+                {
+                    var novelInfo = new UpdateNovelInfo();
+                    var nameNode = novel.Children[0];
+                    novelInfo.Name = nameNode.TextContent;
+                    novelInfo.Url = nameNode.Attributes["href"].Value;
+                    var chapterNode = novel.Children[1];
+                    novelInfo.LastChapter = chapterNode.TextContent;
+                    var timeNode = novel.Children[2];
+                    novelInfo.UpdateTime = timeNode.TextContent;
+                    pageInfo.Infos.Add(novelInfo);
+
+                }
+            }
+            return pageInfo;
+        }
     }
 }

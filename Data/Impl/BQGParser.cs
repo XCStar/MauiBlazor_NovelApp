@@ -117,5 +117,10 @@ namespace MauiApp3.Data.Impl
             
             return novelPageInfo;
         }
+
+        public NovelPageInfo ParseSearchUpdateInfo(IHtmlDocument document)
+        {
+            return new NovelPageInfo();
+        }
     }
 }

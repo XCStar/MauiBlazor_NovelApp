@@ -2,9 +2,14 @@
 using MauiApp3.Common;
 using MauiApp3.Data.Interfaces;
 using MauiApp3.Model;
+using System.Net;
+
 namespace MauiApp3.Data.Impl
 {
-
+    /// <summary>
+    ///有cloudflare保护需要页面js验证 等maui更新劫持webview的webclient验证，手动分析很麻烦暂不分析
+    ///学习tls协议浏览器指纹验证，浏览器可访问，curl或httpclient无法访问需要tls1.3 http2.0及user-agent,accept-langue
+    /// </summary>
     public class BQGService : INovelDataService
     {
         private readonly IHttpClientFactory httpClientFactory;
@@ -13,7 +18,7 @@ namespace MauiApp3.Data.Impl
         public BQGService(IHttpClientFactory httpClientFactory, Func<Type, IPageParser> parserFunc)
         {
             this.httpClientFactory = httpClientFactory;
-            
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12|SecurityProtocolType.Tls13;
             this.pageParser = parserFunc(typeof(BQGParser));
         }
 
@@ -144,10 +149,13 @@ namespace MauiApp3.Data.Impl
 
         private void AddRequestHeader(HttpClient client)
         {
-            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/113.0.0.0");
-            client.DefaultRequestHeaders.Add("Cookie", "cf_clearance=bQo9beEWy_SSxhSW.pYnvuWrYi1La0xzpF4XGAHcPs8-1681896870-0-160; __cf_bm=zSuMYIfg3abeXF3S3JN6pXrUCLaYZr8EE4EFRSySPP4-1681901648-0-AQTzNf/YuXey57mkcyl7mQ0t7iBEkl2nj+Glwl/09Dzr6xxutEmzXXNRdLvEKzVe5jgyk2okKEGpin6Et7ZO56hl8LRTgoyUn7vAxw4FKdSc");
-            client.DefaultRequestHeaders.Add("Accept-Agent", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-            client.DefaultRequestHeaders.Add("rerfer", "https://m.beqege.cc/");
+            
+            
+            client.DefaultRequestVersion = HttpVersion.Version20;
+            //client.DefaultRequestHeaders.Add("Cookie", "__cf_bm=aVRR5wYLYqRiiPalmWy6RWfVIwAtCsaqRmcnJHz5fSY-1681973322-0-AS33zB2n3+8gGvUR0zbUtZsCNuPe9VO/KZOY52jYauzOVRtHe/A9Qy+jyGtb1zpTirPW/HGDZc7z7zfr9JUwnVU=;");
+            client.DefaultRequestHeaders.Add("accept-language", "zh-CN,zh;q=0.9,en;q=0.8");
+            client.DefaultRequestHeaders.Add("User-Agent", "AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1 (compatible; Baiduspider-render/2.0; +http://www.baidu.com/search/spider.html)");
+            client.DefaultRequestHeaders.Add("referer", baseUrl);
         }
     }
 }

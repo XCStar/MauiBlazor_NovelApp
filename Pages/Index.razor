@@ -38,15 +38,15 @@ else
 
             @if (novelPageInfo.CurrentPage > 1)
             {
-                <a @onclick=@(e=>Navigation.GoTo("/index",(novelPageInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">上一页</a>
+                <a @onclick=@(e=>Navigation.GoTo("/index",type,(novelPageInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">上一页</a>
             }
             @if (novelPageInfo.CurrentPage < novelPageInfo.PageCount)
             {
-                <a @onclick=@(e=>Navigation.GoTo("/index",novelPageInfo.PageCount.ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary ">尾页</a>
+                <a @onclick=@(e=>Navigation.GoTo("/index",type,novelPageInfo.PageCount.ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary ">尾页</a>
             }
             @if (novelPageInfo.CurrentPage < novelPageInfo.PageCount)
             {
-                <a @onclick=@(e=>Navigation.GoTo("/index",(novelPageInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">下一页</a>
+                <a @onclick=@(e=>Navigation.GoTo("/index",type,(novelPageInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">下一页</a>
             }
         </div>
 
@@ -74,15 +74,15 @@ else
         <NavLink href="/records" class="btn text-nowrap btn-sm btn-block btn-outline-primary">历史记录</NavLink>
         @if (novelPageInfo.CurrentPage > 1)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/index",(novelPageInfo.CurrentPage-1).ToString(),type)) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">上一页</a>
+            <a @onclick=@(e=>Navigation.GoTo("/index",type,(novelPageInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">上一页</a>
         }
         @if (novelPageInfo.CurrentPage < novelPageInfo.PageCount)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/index",novelPageInfo.PageCount.ToString(),type)) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">尾页</a>
+            <a @onclick=@(e=>Navigation.GoTo("/index",type,novelPageInfo.PageCount.ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">尾页</a>
         }
         @if (novelPageInfo.CurrentPage < novelPageInfo.PageCount)
         {
-            <a @onclick=@(e=>Navigation.GoTo("/index",(novelPageInfo.CurrentPage+1).ToString(),type)) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">下一页</a>
+            <a @onclick=@(e=>Navigation.GoTo("/index",type,(novelPageInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">下一页</a>
         }
     </div>
     <div class="container">
