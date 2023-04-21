@@ -9,13 +9,9 @@
 @inject Func<Type,INovelDataService> dataService;
 @inject NavigationManager Navigation;
 @inject IJSRuntime js;
+<MauiApp3.Components.NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))" RecordUrl="/records"></MauiApp3.Components.NovelNaviageBar>
 <div class="container">
-    <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-lg btn-block btn-outline-primary">首页</a>
-
-    <NavLink href="/records" class="btn btn-lg btn-block btn-outline-primary">历史记录</NavLink>
-</div>
-<div class="container">
-    <h1><strong>@searchText</strong>搜索结果</h1>
+    <h1 class="text-center"><strong>@searchText</strong>搜索结果</h1>
     @if (novelPageInfo != null)
     {
         <div class="p-2 bd-highlight">

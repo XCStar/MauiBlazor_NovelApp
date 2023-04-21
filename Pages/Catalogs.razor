@@ -5,36 +5,21 @@
 @using System.Text;
 @using MauiApp3.Data.Impl;
 @using MauiApp3.Data.Interfaces;
+@using MauiApp3.Components;
 @inject Func<Type,INovelDataService> dataServiceFunc;
 @inject NavigationManager Navigation
 
 @inject IJSRuntime js;
 @if (novelContent == null)
 {
-     <div class="btn-group container">
-        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-lg btn-block btn-outline-primary  mt-2">主页</a>
-        <NavLink href="/records" class="btn btn-lg btn-block btn-outline-primary  mt-2">历史记录</NavLink>
-        @if (!string.IsNullOrEmpty(NovelAddr))
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",type,NovelAddr,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mt-2">目录</a>
-        }
-        @if (!string.IsNullOrEmpty(url)&&showRefresh)
-        {
-            <div @onclick=@(e=>Navigation.GoTo("/catalogs",type,url,NovelId,NovelName,NovelAddr,Guid.NewGuid().ToString())) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mt-2">刷新</div>
-        }
-     </div>
+    <NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))" CatalogUrl="@(RazorHelper.BuilderUrl("/catalogs",type,url,NovelId,NovelName,NovelAddr,Guid.NewGuid().ToString()))" RecordUrl="/records" UrlCollections="@refershUrl"></NovelNaviageBar>
+
     <p>@Message</p>
 }
 else
 {
-    <div class="btn-group container">
-        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-lg btn-block btn-outline-primary  mt-2">主页</a>
-        <NavLink href="/records" class="btn btn-lg btn-block btn-outline-primary  mt-2">历史记录</NavLink>
-        @if (!string.IsNullOrEmpty(novelContent.Next))
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mt-2">下一页</a>
-        }
-    </div>
+    <NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))"   NextUrl="@(RazorHelper.BuilderUrl("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr))" RecordUrl="/records" ></NovelNaviageBar>
+   
     <div class="row mt-1 mb-1" >
         <div class="col-4"></div>
         <div class="col-2">
@@ -47,18 +32,8 @@ else
     </div>
     <div class="text-center"><h3 class="align-items-center">@novelContent.ChapterName</h3></div>
     <div style="background:#e6e6e6;font-size:@(fontSize)px">@(new MarkupString(novelContent.Content))</div>
-    <div class="btn-group container">
-        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-lg btn-block btn-outline-primary mb-3">主页</a>
-         @if (!string.IsNullOrEmpty(NovelAddr))
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",type,NovelAddr,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mb-3">目录</a>
-        }
-       
-        @if (!string.IsNullOrEmpty(novelContent.Next))
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr)) @onclick:preventDefault class="btn btn-lg btn-block btn-outline-primary mb-3">下一页</a>
-        }
-    </div>
+    <NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))" NextUrl="@(RazorHelper.BuilderUrl("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr))" CatalogUrl="@(RazorHelper.BuilderUrl("/detial",type,NovelAddr,NovelId,NovelName,NovelAddr))"></NovelNaviageBar>
+
 }
 @code {
     [Parameter] public string type { get; set; }
@@ -77,8 +52,12 @@ else
     public MauiApp3.Model.NovelContent novelContent;
     public string Message = "Data Loading ............";
     public static int errCount = 0;
+    private List<KeyValuePair<string, string>> refershUrl = new();
     protected override async Task OnParametersSetAsync()
     {
+        refershUrl.Add(
+     new KeyValuePair<string, string>("刷新", RazorHelper.BuilderUrl("/catalogs", type, url, NovelId, NovelName, NovelAddr, Guid.NewGuid().ToString()))
+    );
         try
         {
             await js.InvokeVoidAsync("loading", true);

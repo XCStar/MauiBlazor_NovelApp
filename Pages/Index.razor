@@ -10,15 +10,13 @@
 @inject IJSRuntime js;
 @if (novelPageInfo is null)
 {
-    <div class="btn-group container">
-        <NavLink href="/" class="btn text-nowrap btn-sm btn-block btn-outline-primary">主页</NavLink>
-        <NavLink href="/records" class="btn text-nowrap btn-sm btn-block btn-outline-primary">历史记录</NavLink>
-    </div>
+    <MauiApp3.Components.NovelNaviageBar IndexUrl="/"
+                                     RecordUrl="/records"
+                                  ></MauiApp3.Components.NovelNaviageBar>
     <p><em>@Message</em></p>
 }
 else
 {
-
     <div>
         <form>
             <div class="form-group mx-sm-3  mt-3">
@@ -31,25 +29,11 @@ else
     <div class="d-flex flex-column bd-highlight mb-3"></div>
     <div class="p-2 bd-highlight">
         <p>当前页：@novelPageInfo.CurrentPage 总页数:@novelPageInfo.PageCount</p>
-        <div class="btn-group container">
-            <NavLink href="/" class="btn text-nowrap btn-sm btn-block btn-outline-primary">主页</NavLink>
-
-            <NavLink href="/records" class="btn text-nowrap btn-sm btn-block btn-outline-primary">历史记录</NavLink>
-
-            @if (novelPageInfo.CurrentPage > 1)
-            {
-                <a @onclick=@(e=>Navigation.GoTo("/index",type,(novelPageInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">上一页</a>
-            }
-            @if (novelPageInfo.CurrentPage < novelPageInfo.PageCount)
-            {
-                <a @onclick=@(e=>Navigation.GoTo("/index",type,novelPageInfo.PageCount.ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary ">尾页</a>
-            }
-            @if (novelPageInfo.CurrentPage < novelPageInfo.PageCount)
-            {
-                <a @onclick=@(e=>Navigation.GoTo("/index",type,(novelPageInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">下一页</a>
-            }
-        </div>
-
+        <MauiApp3.Components.NovelNaviageBar IndexUrl="/"
+                                       RecordUrl="/records"
+                                       NextUrl="@(nextUrl)"
+                                       LastUrl="@(lastUrl)"
+                                      ></MauiApp3.Components.NovelNaviageBar>
     </div>
     <div class="p-2 bd-highlight">
         <ul>
@@ -69,22 +53,12 @@ else
 
         </ul>
     </div>
-    <div class="btn-group container mb-3">
-        <NavLink href="/" class="btn btn-sm btn-block btn-outline-primary">主页</NavLink>
-        <NavLink href="/records" class="btn text-nowrap btn-sm btn-block btn-outline-primary">历史记录</NavLink>
-        @if (novelPageInfo.CurrentPage > 1)
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/index",type,(novelPageInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">上一页</a>
-        }
-        @if (novelPageInfo.CurrentPage < novelPageInfo.PageCount)
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/index",type,novelPageInfo.PageCount.ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">尾页</a>
-        }
-        @if (novelPageInfo.CurrentPage < novelPageInfo.PageCount)
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/index",type,(novelPageInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn text-nowrap btn-sm btn-block btn-outline-primary">下一页</a>
-        }
-    </div>
+    <MauiApp3.Components.NovelNaviageBar IndexUrl="/"
+    RecordUrl="/records"
+    NextUrl="@(nextUrl)"
+    LastUrl="@(lastUrl)"
+    ></MauiApp3.Components.NovelNaviageBar>
+    
     <div class="container">
         <div class="input-group mb-3 mt-2">
             <input type="text" class="form-control" placeholder="input page number" @bind=pageNum>
@@ -101,11 +75,25 @@ else
     [Parameter]
     public int? pageNum { get; set; }
     [Parameter] public string type { get; set; }
-
     public string searchText { get; set; }
     private NovelPageInfo novelPageInfo;
     public string Message = "Loading";
-
+    private string nextUrl => (novelPageInfo.PageCount - novelPageInfo.CurrentPage) switch
+    {
+         >0 => RazorHelper.BuilderUrl("/index", type, (novelPageInfo.CurrentPage + 1).ToString()),
+        _ => string.Empty
+    };
+    
+    private string lastUrl => (novelPageInfo.PageCount - novelPageInfo.CurrentPage) switch
+    {
+         >0 => RazorHelper.BuilderUrl("/index", type, (novelPageInfo.PageCount).ToString()),
+        _ => string.Empty
+    };
+    private string prevUrl=> novelPageInfo.CurrentPage switch
+    {
+        > 1 => RazorHelper.BuilderUrl("/index", type, (novelPageInfo.CurrentPage - 1).ToString()),
+        _ => string.Empty
+    };
     protected override async Task OnParametersSetAsync()
     {
         await js.InvokeVoidAsync("loading", true);
@@ -140,7 +128,7 @@ else
     {
         if (pageNum != null && pageNum.Value != novelPageInfo.CurrentPage && pageNum.Value <= novelPageInfo.PageCount)
         {
-            Navigation.GoTo("/index", pageNum.Value.ToString(),type);
+            Navigation.GoTo("/index",type, pageNum.Value.ToString());
         }
 
     }

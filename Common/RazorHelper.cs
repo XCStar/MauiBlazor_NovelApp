@@ -16,16 +16,21 @@ namespace MauiApp3.Common
         {
             return $"index/{type}/1";
         }
-        public static void GoTo(this NavigationManager navigation,string url, params string[] args)
+        public static string BuilderUrl(string url, params string[] args)
         {
             urlStringBuilder.Clear();
             urlStringBuilder.Append(url);
             if (args.Length > 0)
             {
                 urlStringBuilder.Append("/");
-                urlStringBuilder.Append(string.Join("/",args.Select(x=>UrlEncoder.Default.Encode(x))));
+                urlStringBuilder.Append(string.Join("/", args.Select(x => UrlEncoder.Default.Encode(x))));
             }
-            navigation.NavigateTo(urlStringBuilder.ToString());
+            return urlStringBuilder.ToString();
+        }
+        public static void GoTo(this NavigationManager navigation,string url, params string[] args)
+        {
+            
+            navigation.NavigateTo(BuilderUrl(url,args));
 
         }
         public static async Task OpenInWebView(this NavigationManager manager, string url)

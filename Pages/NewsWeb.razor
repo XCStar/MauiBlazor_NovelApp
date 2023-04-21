@@ -5,88 +5,46 @@
 @inject NewsService newService;
 @inject IJSRuntime js;
 @inject NavigationManager navigate;
-
-<div class="btn-group container mb-3 mt-2">
-    <NavLink href="/" class="btn text-nowrap btn-sm btn-block btn-outline-primary">主页</NavLink>
-    <NavLink href="/novels" class="btn text-nowrap btn-sm btn-block btn-outline-primary">小说</NavLink>
-    <NavLink href="/records" class="btn text-nowrap btn-sm btn-block btn-outline-primary">历史记录</NavLink>
-</div>
+<MauiApp3.Components.NovelNaviageBar IndexUrl="/"
+                                   NovelUrl="/novels"
+                                     RecordUrl="/records"></MauiApp3.Components.NovelNaviageBar>
 <div class="container">
     <ul class="list-group list-group-flush">
        
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>navigate.OpenInWebView("https://www.cnblogs.com/"))" style="text-decoration:none;">博客园</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(1))">知    乎</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(1,false))">微博</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(69))">今日头条</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(132,false))">开发者头条</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(54,false))">GitHub</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(89,false))">看    雪</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(327,false))">安 全 客</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(326,false))">FreeBuf</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(2,false))">百    度</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(18))">B站  </p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(12))">开源中国</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(6))">IT之家</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(68,false))">52破解</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(221,false))">抖    音</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(5832,false))">起    点</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(5846,false))">纵    横</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(125,false))">知乎日报</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(20,false))"> AcFun</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(369,false))">历史上今天</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(137,false))">少数派 </p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(11,false))">36  氪</p></li>
-
-
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>GetNews(46,false))">天     涯</p></li>
-
-
+        <li class="list-group-item"><span class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover align-middle" @onclick="@(e=>navigate.OpenInWebView("https://www.cnblogs.com/"))">博客园</span></li>
+        @foreach (var item in newWebs)
+        {
+            <li class="list-group-item"><span class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover align-middle" @onclick="@(e=>GetNews(item.id,item.falg))">@item.name</span></li>
+        }
+     
     </ul>
 </div>
 @code {
-    public IList<MauiApp3.Data.News> news;
+    private List<(int id, bool falg, string name)> newWebs = new List<(int id, bool falg, string name)>
+    {
+(1,true,"知乎"),
+(1,false,"微博"),
+(69,true,"今日头条"),
+(132,false,"开发者头条"),
+(54,false,"GitHub"),
+(89,false,"看雪"),
+(327,false,"安全客"),
+(326,false,"FreeBuf"),
+(2,false,"百度"),
+(18,true,"B站"),
+(12,true,"开源中国"),
+(6,true,"IT之家"),
+(68,false,"52破解"),
+(221,false,"抖音"),
+(5832,false,"起点"),
+(5846,false,"纵横"),
+(125,false,"知乎日报"),
+(20,false,"AcFun"),
+(369,false,"历史上今天"),
+(137,false,"少数派 "),
+(11,false,"36氪"),
+(46,false,"天涯")
+    };
     public async Task GetNews(int id, bool flag = true)
     {
         try
@@ -98,7 +56,6 @@
         {
             await js.InvokeVoidAsync("loading", false);
         }
-
        
     }
 }

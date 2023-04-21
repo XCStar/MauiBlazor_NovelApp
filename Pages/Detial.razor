@@ -10,32 +10,17 @@
 @inject IJSRuntime js;
 @if (novelInfo == null)
 {
-    <div class="btn-group  container">
-        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">主页</a>
-        <NavLink href="/records" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">历史记录</NavLink>
-    </div>
+    <MauiApp3.Components.NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))"
+                                   RecordUrl="/records" />
     <p>@Message</p>
 }
 else
 {
     <p>当前页：@pageNum</p>
-    <div class="btn-group  container">
-        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">主页</a>
-        <NavLink href="/records" class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">历史记录</NavLink>
-
-        @if (novelInfo.CurrentPage > 1)
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">上一页(@(novelInfo.CurrentPage - 1))</a>
-        }
-        @if (novelInfo.CurrentPage < novelInfo.TotalPage)
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">尾页(@(novelInfo.TotalPage))</a>
-        }
-        @if (novelInfo.CurrentPage < novelInfo.TotalPage)
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mt-2">下一页(@(novelInfo.CurrentPage + 1))</a>
-        }
-    </div>
+    <MauiApp3.Components.NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))"
+                                   PrevtUrl="@(prevUrl)"
+                                   NextUrl="@(nextUrl)"
+                                   LastUrl="@(lastUrl)" />
     <div class="row container text-center mt-3">
     <h1>@novelInfo.Name</h1>
     <p>@novelInfo.Author</p>
@@ -59,23 +44,12 @@ else
        
     }
     </ul>
-    <div class="btn-group container">
-        <a href="@(RazorHelper.GetIndexUrl(type))" class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">主页</a>
-
-        @if (novelInfo.CurrentPage > 1)
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage-1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">上一页(@(novelInfo.CurrentPage - 1))</a>
-        }
-        @if (novelInfo.CurrentPage < novelInfo.TotalPage)
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,novelInfo.TotalPage.ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">尾页(@(novelInfo.TotalPage))</a>
-        }
-
-        @if (novelInfo.CurrentPage < novelInfo.TotalPage)
-        {
-            <a @onclick=@(e=>Navigation.GoTo("/detial",type,url,NovelId,NovelName,NovelAddr,(novelInfo.CurrentPage+1).ToString())) @onclick:preventDefault class="btn btn-sm text-nowrap btn-block btn-outline-primary mb-2">下一页(@(novelInfo.CurrentPage + 1))</a>
-        }
-    </div>
+    <MauiApp3.Components.NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))"
+    PrevtUrl="@(prevUrl)"
+    NextUrl="@(nextUrl)"
+    LastUrl="@(lastUrl)">
+    
+    </MauiApp3.Components.NovelNaviageBar>
     @if (novelInfo.TotalPage > 1)
     {
         <div class="input-group container">
@@ -97,13 +71,28 @@ else
     [Parameter]
     public string url { get; set; }
     [Parameter]
-    public int? pageNum { get; set; }
+    public int? pageNum { get; set; } = 1;
     [Parameter]
     public string NovelId { get; set; }
     [Parameter]
     public string NovelName { get; set; }
     [Parameter]
     public string NovelAddr { get; set; }
+    private string nextUrl => (novelInfo.TotalPage - novelInfo.CurrentPage) switch
+    {
+        > 0 => RazorHelper.BuilderUrl("/detial", type, url, NovelId, NovelName, NovelAddr, (novelInfo.CurrentPage +1).ToString()),
+        _ => string.Empty
+    };
+    private string lastUrl => (novelInfo.TotalPage - novelInfo.CurrentPage) switch
+    {
+        >0 => RazorHelper.BuilderUrl("/detial", type, url, NovelId, NovelName, NovelAddr,novelInfo.TotalPage.ToString()),
+        _  => string.Empty
+    };
+    private string prevUrl=>novelInfo.CurrentPage switch
+    {
+        > 1 => RazorHelper.BuilderUrl("/detial", type, url, NovelId, NovelName, NovelAddr, (novelInfo.CurrentPage - 1).ToString()),
+       _=>string.Empty
+    };
     public MauiApp3.Model.NovelInfo novelInfo;
     public string Message = "loading .......";
     public void SelectedChanged(ChangeEventArgs e)
