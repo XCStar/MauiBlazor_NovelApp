@@ -3,12 +3,12 @@
 <div class="btn-group container">
     @foreach (var item in currentUrlCollections)
     {
-        <NavLink href="@item.Value" class="btn btn-sm btn-block btn-outline-primary  mt-2">@item.Key</NavLink>
+        <NavLink href="@item.Value" class="@btnSizeClass">@item.Key</NavLink>
     }
 </div>
-
 @code {
     private List<KeyValuePair<string, string>> currentUrlCollections = new();
+    private string btnSizeClass = "btn-sm btn btn-block btn-outline-primary mt-2";
     [Parameter] public string IndexUrl { get; set; }
     [Parameter] public string NextUrl { get; set; }
     [Parameter] public string RecordUrl { get; set; }
@@ -65,7 +65,15 @@
         {
             currentUrlCollections.AddRange(UrlCollections);    
         }
+        if (currentUrlCollections.Count < 5)
+        {
 
+            btnSizeClass = "btn-lg btn btn-block btn-outline-primary mt-2";
+        }
+        else
+        {
+            btnSizeClass = "btn-sm btn btn-block btn-outline-primary mt-2";
+        }
     }
 
 }

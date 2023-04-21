@@ -75,7 +75,6 @@ namespace MauiApp3.Data.Impl
             {
                 url = url.Replace(".html", $"_{pageNum}.html");
             }
-            novelInfo.CurrentPage = pageNum;
             var html = FileCacheHelper.Get(url);
             if (string.IsNullOrEmpty(html))
             {
@@ -101,6 +100,7 @@ namespace MauiApp3.Data.Impl
             novelInfo = pageParser.ParseNovel(document);
             novelInfo.Chapters = pageParser.ParseChapters(document);
             novelInfo.TotalPage = pageParser.ParseNovelPageCount(document);
+            novelInfo.CurrentPage = pageNum;
             return novelInfo;
         }
         public async Task<NovelContent> GetChapter(string url, string novelId, string novleName, string novelAddr)

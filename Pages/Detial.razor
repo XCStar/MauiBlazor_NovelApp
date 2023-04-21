@@ -71,7 +71,7 @@ else
     [Parameter]
     public string url { get; set; }
     [Parameter]
-    public int? pageNum { get; set; } = 1;
+    public int? pageNum { get; set; }
     [Parameter]
     public string NovelId { get; set; }
     [Parameter]
@@ -91,7 +91,7 @@ else
     private string prevUrl=>novelInfo.CurrentPage switch
     {
         > 1 => RazorHelper.BuilderUrl("/detial", type, url, NovelId, NovelName, NovelAddr, (novelInfo.CurrentPage - 1).ToString()),
-       _=>string.Empty
+        _=>string.Empty
     };
     public MauiApp3.Model.NovelInfo novelInfo;
     public string Message = "loading .......";
@@ -126,7 +126,11 @@ else
                 service = dataServiceFunc(typeof(BQGService));
 
             }
-            novelInfo = await service.GetNovel(url, pageNum.HasValue ? pageNum.Value : 1);
+            if (pageNum is null)
+            {
+                pageNum = 1;   
+            }
+            novelInfo = await service.GetNovel(url,pageNum.Value);
 
         }
         catch (Exception ex)
