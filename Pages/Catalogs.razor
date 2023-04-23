@@ -55,9 +55,11 @@ else
     private List<KeyValuePair<string, string>> refershUrl = new();
     protected override async Task OnParametersSetAsync()
     {
-        refershUrl.Add(
-     new KeyValuePair<string, string>("刷新", RazorHelper.BuilderUrl("/catalogs", type, url, NovelId, NovelName, NovelAddr, Guid.NewGuid().ToString()))
-    );
+        if (refershUrl.Count == 0)
+        {
+            refershUrl.Add( new KeyValuePair<string, string>("刷新", RazorHelper.BuilderUrl("/catalogs", type, url, NovelId, NovelName, NovelAddr, Guid.NewGuid().ToString())));
+        }
+      
         try
         {
             await js.InvokeVoidAsync("loading", true);
