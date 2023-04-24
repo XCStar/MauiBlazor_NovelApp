@@ -26,9 +26,13 @@ public static class MauiProgram
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 })
                 .ConfigureLifecycleEvents(events => {
-
+                   
 #if ANDROID
- 
+ 	Microsoft.Maui.Handlers.WebViewHandler.Mapper.ModifyMapping(nameof(Microsoft.Maui.Platform.MauiWebViewClient), (handler, view, args) =>
+		{
+            var webHandler=(Microsoft.Maui.Handlers.WebViewHandler)handler; 
+			handler.PlatformView.SetWebViewClient(new MauiApp3.Platforms.Android.MyWebClient(webHandler));
+		});
 #endif
 #if IOS
 
@@ -38,24 +42,24 @@ public static class MauiProgram
                 }).
                 ConfigureMauiHandlers(x =>
                 {
-
+                    
 #if ANDROID
 
-                   // x.AddHandler(typeof(Microsoft.Maui.Controls.WebView),typeof(MltWebViewHandler));
+                  x.AddHandler(typeof(Microsoft.Maui.Controls.WebView),typeof(MltWebViewHandler));
 #endif
-                })
+                });
+#if ANDROID
 
-                ;
-
+#endif
             builder.Services.AddMauiBlazorWebView();
 
-
+            
 #if DEBUG
-		builder.Services.AddBlazorWebViewDeveloperTools();
+        builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
 #endif
 
-            //builder.Services.AddSingleton<WeatherForecastService>();
+            
             builder.Services
                 .AddHttpClient("sodu").ConfigurePrimaryHttpMessageHandler(() =>
                 {
@@ -166,11 +170,14 @@ public class MltWebViewHandler : WebViewHandler
     
     protected override Android.Webkit.WebView CreatePlatformView()
     {
+        
         var platformView= base.CreatePlatformView();
-        platformView.SetWebViewClient(new CustomWebViewClient());
-        global::Android.Webkit.WebView.SetWebContentsDebuggingEnabled(true);
+        
+        platformView.SetWebViewClient(new MauiApp3.Platforms.Android.MyWebClient(this));
+       
         return platformView;
     }
+    
    
 }
 
