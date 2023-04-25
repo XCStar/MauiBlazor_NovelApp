@@ -45,7 +45,7 @@ public static class MauiProgram
                     
 #if ANDROID
 
-                  x.AddHandler(typeof(Microsoft.Maui.Controls.WebView),typeof(MltWebViewHandler));
+                  //x.AddHandler(typeof(Microsoft.Maui.Controls.WebView),typeof(MltWebViewHandler));
 #endif
                 });
 #if ANDROID
@@ -61,7 +61,7 @@ public static class MauiProgram
 
             
             builder.Services
-                .AddHttpClient("sodu").ConfigurePrimaryHttpMessageHandler(() =>
+                .AddHttpClient(nameof(SoduService)).ConfigurePrimaryHttpMessageHandler(() =>
                 {
                     return new HttpClientHandler
                     {
@@ -70,6 +70,16 @@ public static class MauiProgram
                     };
 
                 });
+            builder.Services
+               .AddHttpClient(nameof(LinDianService)).ConfigurePrimaryHttpMessageHandler(() =>
+               {
+                   return new HttpClientHandler
+                   {
+                       AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip
+
+                   };
+
+               });
             builder.Services.AddHttpClient("my").ConfigurePrimaryHttpMessageHandler(() =>
             {
                 return new HttpClientHandler
@@ -89,7 +99,7 @@ public static class MauiProgram
                 };
 
             });
-            builder.Services.AddHttpClient("bqg").ConfigurePrimaryHttpMessageHandler(() =>
+            builder.Services.AddHttpClient(nameof(BQGService)).ConfigurePrimaryHttpMessageHandler(() =>
             {
                 return new HttpClientHandler
                 {
@@ -102,15 +112,21 @@ public static class MauiProgram
 
             builder.Services.AddSingleton<SoduParser>();
             builder.Services.AddSingleton<BQGParser>();
+            builder.Services.AddSingleton<LinDianParser>();
+
             builder.Services.AddSingleton(provider => {
-                Func<Type, IPageParser> accesor = key => {
-                    if (key == typeof(SoduParser))
+                Func<string, IPageParser> accesor = key => {
+                    if (key == nameof(SoduParser))
                     {
                         return provider.GetService<SoduParser>();
                     }
-                    else if (key == typeof(BQGParser))
+                    else if (key == nameof(BQGParser))
                     {
                         return provider.GetService<BQGParser>();
+                    }
+                    else if (key == nameof(LinDianParser))
+                    {
+                        return provider.GetService<LinDianParser>();
                     }
                     throw new ArgumentException($"不支持的类型{key}");
                 
@@ -120,14 +136,18 @@ public static class MauiProgram
                 return accesor;
             });
             builder.Services.AddSingleton(provider => {
-                Func<Type, INovelDataService> accesor = key => {
-                    if (key == typeof(SoduService))
+                Func<string, INovelDataService> accesor = key => {
+                    if (key == nameof(SoduService))
                     {
                         return provider.GetService<SoduService>();
                     }
-                    else if (key == typeof(BQGService))
+                    else if (key == nameof(BQGService))
                     {
                         return provider.GetService<BQGService>();
+                    }
+                    else if (key == nameof(LinDianService))
+                    {
+                        return provider.GetService<LinDianService>();
                     }
                     throw new ArgumentException($"不支持的类型{key}");
 
@@ -138,6 +158,7 @@ public static class MauiProgram
             });
             builder.Services.AddSingleton<SoduService>();
             builder.Services.AddSingleton<BQGService>();
+            builder.Services.AddSingleton<LinDianService>();
             builder.Services.AddSingleton<IFileSystem>(FileSystem.Current);
             builder.Services.AddSingleton<NewsService>();
             return builder.Build();

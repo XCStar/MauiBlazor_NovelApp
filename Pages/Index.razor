@@ -5,7 +5,7 @@
 @using System.Text;
 @using MauiApp3.Data.Impl;
 @using MauiApp3.Data.Interfaces;
-@inject Func<Type,INovelDataService> dataServiceFunc;
+@inject Func<string,INovelDataService> dataServiceFunc;
 @inject NavigationManager Navigation
 @inject IJSRuntime js;
 @if (novelPageInfo is null)
@@ -99,17 +99,7 @@ else
         await js.InvokeVoidAsync("loading", true);
         try
         {
-            INovelDataService service;
-            if (type == "sodu")
-            {
-                service = dataServiceFunc(typeof(SoduService));
-            }
-            else
-            {
-                service = dataServiceFunc(typeof(BQGService));
-                
-            }
-           
+            INovelDataService service = dataServiceFunc(ServiceLoctor.GetServiceName(type));
             novelPageInfo = await service.VisitIndexPage(pageNum.HasValue ? pageNum.Value : 1);
         }
         catch (Exception ex)

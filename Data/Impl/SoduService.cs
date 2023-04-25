@@ -24,10 +24,10 @@ namespace MauiApp3.Data.Impl
         private static readonly string serachUrl = "/search.html?searchkey={0}&searchtype=novelname";
         private IPageParser pageParser;
 
-        public SoduService(IHttpClientFactory httpClientFactory, Func<Type,IPageParser> parserFunc)
+        public SoduService(IHttpClientFactory httpClientFactory, Func<string,IPageParser> parserFunc)
         {
             this.httpClientFactory = httpClientFactory;
-            this.pageParser = parserFunc(typeof(SoduParser));
+            this.pageParser = parserFunc(nameof(SoduParser));
 
         }
 
@@ -38,7 +38,7 @@ namespace MauiApp3.Data.Impl
             var html = FileCacheHelper.Get(url);
             if (string.IsNullOrEmpty(html))
             {
-                var client = httpClientFactory.CreateClient("sodu");
+                var client = httpClientFactory.CreateClient(nameof(SoduService));
                 client.BaseAddress = new Uri(baseUrl);
                 client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/107.0.0.0");
                 try
@@ -78,7 +78,7 @@ namespace MauiApp3.Data.Impl
             var html = FileCacheHelper.Get(url);
             if (string.IsNullOrEmpty(html))
             {
-                var client = httpClientFactory.CreateClient("sodu");
+                var client = httpClientFactory.CreateClient(nameof(SoduService));
                 client.BaseAddress = new Uri(baseUrl);
                 client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/107.0.0.0");
                 try
@@ -109,7 +109,7 @@ namespace MauiApp3.Data.Impl
             var html = FileCacheHelper.Get(url);
             if (string.IsNullOrEmpty(html))
             {
-                var client = httpClientFactory.CreateClient("sodu");
+                var client = httpClientFactory.CreateClient(nameof(SoduService));
                 client.BaseAddress = new Uri(baseUrl);
                 client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/107.0.0.0");
                 try
@@ -140,7 +140,7 @@ namespace MauiApp3.Data.Impl
                     {
                         novelContent.ChapterName = "最后阅读章节";
                     }
-                    await DBHelper.Insert(novleName, novelId, novelAddr, novelContent.ChapterName, url,"sodu");
+                    await DBHelper.Insert(novleName, novelId, novelAddr, novelContent.ChapterName, url,nameof(SoduService));
                 }
                 catch (Exception ex)
                 {
@@ -159,7 +159,7 @@ namespace MauiApp3.Data.Impl
             var pageInfo = new NovelPageInfo();
             var url = string.Format(serachUrl, searchText);
             string html = string.Empty;
-            var client = httpClientFactory.CreateClient("sodu");
+            var client = httpClientFactory.CreateClient(nameof(SoduService));
             client.BaseAddress = new Uri(baseUrl);
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/107.0.0.0");
             try

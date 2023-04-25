@@ -62,12 +62,6 @@ window.alert(""clear"");
 			OnPropertyChanged();
 		}
 	}
-  public string UserAgent{
-    get
-    {
-      return webView.UserAgent;
-    }
-  }
 	private string currentUrl;
 	public string CurrentUrl 
 	{
@@ -86,7 +80,7 @@ window.alert(""clear"");
         }
     }
 
-	private async void webView_Navigating(object sender, WebNavigatingEventArgs e)
+	private void webView_Navigating(object sender, WebNavigatingEventArgs e)
     {
         
 		if (e.Url == "about:blank")

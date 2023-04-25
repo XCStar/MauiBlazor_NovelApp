@@ -6,7 +6,7 @@
 @using MauiApp3.Data.Impl;
 @using MauiApp3.Data.Interfaces;
 @using MauiApp3.Components;
-@inject Func<Type,INovelDataService> dataServiceFunc;
+@inject Func<string,INovelDataService> dataServiceFunc;
 @inject NavigationManager Navigation
 
 @inject IJSRuntime js;
@@ -64,16 +64,7 @@ else
         {
             await js.InvokeVoidAsync("loading", true);
             novelContent = null;
-            INovelDataService service;
-            if (type == "sodu")
-            {
-                service = dataServiceFunc(typeof(SoduService));
-            }
-            else
-            {
-                service = dataServiceFunc(typeof(BQGService));
-                
-            }
+            INovelDataService service = dataServiceFunc(ServiceLoctor.GetServiceName(type));
             novelContent = await service.GetChapter(url, NovelId, NovelName, NovelAddr);
 
         }

@@ -1,37 +1,42 @@
-﻿using AngleSharp.Html.Parser;
-using MauiApp3.Common;
+﻿using MauiApp3.Common;
 using MauiApp3.Data.Interfaces;
 using MauiApp3.Model;
-using System.Net;
+using System.Text.Encodings.Web;
 
 namespace MauiApp3.Data.Impl
 {
-    /// <summary>
-    ///有cloudflare保护需要页面js验证 等maui更新劫持webview的webclient验证，手动分析很麻烦暂不分析
-    ///学习tls协议浏览器指纹验证，浏览器可访问，curl或httpclient无法访问需要tls1.3 http2.0及user-agent,accept-langue
-    /// </summary>
-    public class BQGService : INovelDataService
+
+    public class LinDianService : INovelDataService
     {
-        private readonly IHttpClientFactory httpClientFactory;
-        private readonly IPageParser pageParser;
-        private readonly string baseUrl = "https://m.beqege.cc";
-        public BQGService(IHttpClientFactory httpClientFactory, Func<string, IPageParser> parserFunc)
+        private static readonly string baseUrl = "http://www.lidapoly.com";
+        private IPageParser pageParser;
+        private IHttpClientFactory _httpClientFactory;
+        
+        public LinDianService(IHttpClientFactory httpClientFactory, Func<string, IPageParser> parserFunc)
         {
-            this.httpClientFactory = httpClientFactory;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12|SecurityProtocolType.Tls13;
-            this.pageParser = parserFunc(nameof(BQGParser));
+            _httpClientFactory = httpClientFactory;
+            pageParser = parserFunc.Invoke(nameof(LinDianParser));
+        }
+        private HttpClient GetDefaultHeaderHttpClient()
+        {
+            var client = _httpClientFactory.CreateClient(nameof(LinDianService));
+            client.BaseAddress = new Uri(baseUrl);
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/113.0.0.0");
+            return client;
         }
 
         public async Task<NovelContent> GetChapter(string url, string novelId, string novleName, string novelAddr)
         {
             var novelContent = new NovelContent();
             var html = string.Empty;
-            
+
             try
             {
-                var client = httpClientFactory.CreateClient(nameof(BQGService));
-                client.BaseAddress = new Uri(baseUrl);
-                AddRequestHeader(client);
+                var client = GetDefaultHeaderHttpClient();
+                if (!url.StartsWith("/"))
+                {
+                    url = "/" + url;
+                }
                 html = await client.GetStringAsync(url);
 
             }
@@ -58,7 +63,7 @@ namespace MauiApp3.Data.Impl
                     {
                         novelContent.ChapterName = "最后阅读章节";
                     }
-                    await DBHelper.Insert(novleName, novelId, novelAddr, novelContent.ChapterName, url, nameof(BQGService));
+                    await DBHelper.Insert(novleName, novelId, novelAddr, novelContent.ChapterName, url, nameof(LinDianService));
                 }
                 catch (Exception ex)
                 {
@@ -75,7 +80,7 @@ namespace MauiApp3.Data.Impl
 
         public async Task<NovelInfo> GetNovel(string url, int pageNum = 1)
         {
-            pageNum=pageNum==0?1 : pageNum;
+            pageNum = pageNum == 0 ? 1 : pageNum;
             var novelInfo = new NovelInfo();
             if (pageNum == 2)
             {
@@ -85,9 +90,7 @@ namespace MauiApp3.Data.Impl
             var html = string.Empty;
             try
             {
-                var client = httpClientFactory.CreateClient(nameof(BQGService));
-                client.BaseAddress = new Uri(baseUrl);
-                AddRequestHeader(client);
+                var client = GetDefaultHeaderHttpClient();
                 html = await client.GetStringAsync(url);
             }
             catch (Exception ex)
@@ -110,9 +113,36 @@ namespace MauiApp3.Data.Impl
             return novelInfo;
         }
 
-        public Task<NovelPageInfo> Search(string searchText)
+       
+        public async Task<NovelPageInfo> Search(string searchText)
         {
-            return null;
+            //http://www.lidapoly.com踏星
+            var pageInfo = new NovelPageInfo();
+            var url = string.Format("/ar.php?keyWord={0}", UrlEncoder.Default.Encode(searchText));
+            string html = string.Empty;
+            var client = GetDefaultHeaderHttpClient();
+            try
+            {
+                html = await client.GetStringAsync(url);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            try
+            {
+                var document = pageParser.LoadDocument(html);
+                pageInfo = pageParser.ParseSearchUpdateInfo(document);
+                pageInfo.CurrentPage = 1;
+                pageInfo.PageCount = pageParser.ParseNovelPageCount(document);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return pageInfo;
         }
 
         public async Task<NovelPageInfo> VisitIndexPage(int pageNum = 1)
@@ -122,9 +152,7 @@ namespace MauiApp3.Data.Impl
             var html = string.Empty;
             try
             {
-                var client = httpClientFactory.CreateClient(nameof(BQGService));
-                client.BaseAddress = new Uri(baseUrl);
-                AddRequestHeader(client);
+                var client = GetDefaultHeaderHttpClient();
                 html = await client.GetStringAsync(url);
             }
             catch (Exception ex)
@@ -136,26 +164,15 @@ namespace MauiApp3.Data.Impl
             {
                 var document = pageParser.LoadDocument(html);
                 pageInfo = pageParser.ParseUpdateInfo(document);
+                pageInfo.PageCount = pageParser.ParseNovelPageCount(document);
                 pageInfo.CurrentPage = pageNum;
+              
             }
             catch (Exception ex)
             {
                 throw ex;
             }
             return pageInfo;
-            //get next pages
-
-        }
-
-        private void AddRequestHeader(HttpClient client)
-        {
-            
-            
-            client.DefaultRequestVersion = HttpVersion.Version20;
-            //client.DefaultRequestHeaders.Add("Cookie", "__cf_bm=aVRR5wYLYqRiiPalmWy6RWfVIwAtCsaqRmcnJHz5fSY-1681973322-0-AS33zB2n3+8gGvUR0zbUtZsCNuPe9VO/KZOY52jYauzOVRtHe/A9Qy+jyGtb1zpTirPW/HGDZc7z7zfr9JUwnVU=;");
-            client.DefaultRequestHeaders.Add("accept-language", "zh-CN,zh;q=0.9,en;q=0.8");
-            client.DefaultRequestHeaders.Add("User-Agent", "AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1 (compatible; Baiduspider-render/2.0; +http://www.baidu.com/search/spider.html)");
-            client.DefaultRequestHeaders.Add("referer", baseUrl);
         }
     }
 }

@@ -1,11 +1,26 @@
 ﻿@page "/novels"
+@using MauiApp3.Data.Impl;
 @inject NavigationManager navigate;
 <MauiApp3.Components.NovelNaviageBar IndexUrl="/"
                                    NewsUrl="/newsweb"
                                    RecordUrl="/records"></MauiApp3.Components.NovelNaviageBar>
 <div class="container">
     <ul class="list-group list-group-flush">
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>navigate.NavigateTo("/index/sodu/1"))">搜读</p></li>
-        <li class="list-group-item"><p class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover" @onclick="@(e=>navigate.NavigateTo("/index/bqg/1"))">笔趣阁(cloudflare暂时无法抓取)</p></li>
+        @foreach (var item in novelKeyPairs)
+        {
+            var key = item.Key;
+            <li class="list-group-item">
+                <p class="link-success align-middle" @onclick="@(e=>navigate.NavigateTo($"/index/{key}/1"))">@item.Value</p>
+            </li>
+        }
     </ul>
 </div>
+@code
+{
+    private static readonly Dictionary<string, string> novelKeyPairs = new Dictionary<string, string>
+    {
+           {nameof(SoduService),"搜读" },
+           {nameof(LinDianService),"零点" },
+           {nameof(BQGService),"笔趣阁(cloudflare暂时无法抓取)"}
+    };
+}

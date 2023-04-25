@@ -11,10 +11,10 @@
 <div class="container">
     <ul class="list-group list-group-flush">
        
-        <li class="list-group-item"><span class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover align-middle" @onclick="@(e=>navigate.OpenInWebView("https://www.cnblogs.com/"))">博客园</span></li>
+        <li class="list-group-item"><span class="link-success align-middle" @onclick="@(e=>navigate.OpenInWebView("https://www.cnblogs.com/"))">博客园</span></li>
         @foreach (var item in newWebs)
         {
-            <li class="list-group-item"><span class="link-success  link-underline-opacity-25 link-underline-opacity-100-hover align-middle" @onclick="@(e=>GetNews(item.id,item.falg))">@item.name</span></li>
+            <li class="list-group-item"><span class="link-success align-middle" @onclick="@(e=>GetNews(item.id,item.falg))">@item.name</span></li>
         }
      
     </ul>

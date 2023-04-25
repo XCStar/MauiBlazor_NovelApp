@@ -2,22 +2,28 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiApp3.Views.WebContainerPage"
-             Title="网站">
+             Title="网站" Shell.NavBarIsVisible="False">
+   
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Entry Grid.Column="0" Text="{Binding CurrentUrl}" Margin="5"></Entry>
-                <Button Grid.Column="1" BorderWidth="1" TextColor="Black" Background="Transparent" Text="GO" Margin="5" Clicked="Button_Clicked" ></Button>
+        <Border Grid.Row="0" StrokeThickness="2">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="0,0,0,40"></RoundRectangle>
+            </Border.StrokeShape>
+            <Grid BackgroundColor="AliceBlue">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Entry Grid.Column="0" Text="{Binding CurrentUrl}" Margin="5"></Entry>
+                    <Button Grid.Column="1" BorderWidth="1" TextColor="Black" Background="Transparent" Text="GO" Margin="5" Clicked="Button_Clicked" ></Button>
+                </Grid>
             </Grid>
-        </Grid>
+        </Border>
         <Grid Grid.Row="1">
             <WebView x:Name="webView" Source="{Binding Url}" Navigating="webView_Navigating" Navigated="webView_Navigated" ></WebView>
         </Grid>
