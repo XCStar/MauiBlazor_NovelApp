@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components.WebView;
-#if WINDOWS
-using Microsoft.Web.WebView2;
-#endif
 namespace MauiApp3.Views;
 public partial class MainPage : ContentPage
 {
@@ -12,39 +9,33 @@ public partial class MainPage : ContentPage
 		 InitializeComponent();
 
     }
-    public void BlazorUrlLoading(object sender, UrlLoadingEventArgs e)
-	{
-        
-		
-		e.UrlLoadingStrategy = UrlLoadingStrategy.OpenInWebView;
 
-        if (e.Url.Scheme!="http"&&e.Url.Scheme!="https")
-        {
-            e.UrlLoadingStrategy = UrlLoadingStrategy.CancelLoad;
-        }
 
-	}
+        private  void BlazorUrlLoading(object sender, UrlLoadingEventArgs e)
+		{
 
-   
 
-    private void blazorWebView_BlazorWebViewInitialized(object sender, BlazorWebViewInitializedEventArgs e)
-    {
+			e.UrlLoadingStrategy = UrlLoadingStrategy.OpenInWebView;
 
+			if (e.Url.Scheme != "http" && e.Url.Scheme != "https")
+			{
+				e.UrlLoadingStrategy = UrlLoadingStrategy.CancelLoad;
+			}
+
+		}
+
+		private  void blazorWebView_BlazorWebViewInitialized(object sender, BlazorWebViewInitializedEventArgs e)
+		{
 
 #if ANDROID
 
-#elif IOS
-
-#elif WINDOWS
-        e.WebView.CoreWebView2.NewWindowRequested+=CoreWebView2_NewWindowRequested;
-        void CoreWebView2_NewWindowRequested(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs @event)
-        {
-            @event.NewWindow = e.WebView.CoreWebView2;
-        }
-
+			e.WebView.Settings.JavaScriptEnabled = true;
+			e.WebView.Settings.AllowFileAccess = true;
+			e.WebView.Settings.MediaPlaybackRequiresUserGesture = false;
+			e.WebView.Settings.SetGeolocationEnabled(true);
+			e.WebView.Settings.SetGeolocationDatabasePath(e.WebView.Context?.FilesDir?.Path);
+			e.WebView.SetWebViewClient(new MauiApp3.Platforms.Android.MyBlazorWebViewClient(e.WebView.WebViewClient));
 #endif
-
-
     }
 
 }

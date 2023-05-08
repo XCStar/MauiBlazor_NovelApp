@@ -2,11 +2,10 @@
 using MauiApp3.Data;
 using Microsoft.Maui.LifecycleEvents;
 using System.Text;
-using Microsoft.Maui.Handlers;
 using MauiApp3.Data.Impl;
 using MauiApp3.Data.Interfaces;
 #if ANDROID
-using Android.Webkit;
+
 using Android.Content;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
@@ -26,13 +25,9 @@ public static class MauiProgram
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 })
                 .ConfigureLifecycleEvents(events => {
-                   
+
 #if ANDROID
- 	Microsoft.Maui.Handlers.WebViewHandler.Mapper.ModifyMapping(nameof(Microsoft.Maui.Platform.MauiWebViewClient), (handler, view, args) =>
-		{
-            var webHandler=(Microsoft.Maui.Handlers.WebViewHandler)handler; 
-			handler.PlatformView.SetWebViewClient(new MauiApp3.Platforms.Android.MyWebClient(webHandler));
-		});
+                  
 #endif
 #if IOS
 
@@ -45,7 +40,8 @@ public static class MauiProgram
                     
 #if ANDROID
 
-                  //x.AddHandler(typeof(Microsoft.Maui.Controls.WebView),typeof(MltWebViewHandler));
+                //  x.AddHandler(typeof(Microsoft.Maui.Controls.WebView),typeof(MauiApp3.Platforms.Android.MltWebViewHandler));
+
 #endif
                 });
 #if ANDROID
@@ -184,41 +180,4 @@ public static class MauiProgram
 	}
   
 }
-#if ANDROID
-//没什么卵用，android OnPageFinished不会响应 最新版已解决，等待更新https://github.com/dotnet/maui/pull/14321/files/bab24281ac3638d91d28a11a402e043f3a8f2378
-public class MltWebViewHandler : WebViewHandler
-{
-    
-    protected override Android.Webkit.WebView CreatePlatformView()
-    {
-        
-        var platformView= base.CreatePlatformView();
-        
-        platformView.SetWebViewClient(new MauiApp3.Platforms.Android.MyWebClient(this));
-       
-        return platformView;
-    }
-    
-   
-}
 
-public class CustomWebViewClient : global::Android.Webkit.WebViewClient
-{
-    public CustomWebViewClient()
-    {
-    }
-
-    
-    public override void OnPageFinished(global::Android.Webkit.WebView view,string url)
-    {
-          Console.WriteLine($"<------------------------------{url}---------------------------->");
-          base.OnPageFinished(view,url);
-         
-          if(url.Contains("zhihu"))
-          {
-             view.LoadUrl("javascript:window.alert('===============onPageFinished==============================')");
-          }
-         
-    }
-}
-#endif

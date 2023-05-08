@@ -36,6 +36,8 @@ namespace MauiApp3.Common
         public static async Task OpenInWebView(this NavigationManager manager, string url)
         {
             await Shell.Current.GoToAsync($"{nameof(MauiApp3.Views.WebContainerPage)}?url={UrlEncoder.Default.Encode(url)}");
+          
+          
         }
     }
 }

@@ -11,7 +11,7 @@
         </Grid.RowDefinitions>
         <Border Grid.Row="0" StrokeThickness="2">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="0,0,0,40"></RoundRectangle>
+                <RoundRectangle CornerRadius="20"></RoundRectangle>
             </Border.StrokeShape>
             <Grid BackgroundColor="AliceBlue">
                 <Grid>
@@ -19,8 +19,8 @@
                         <ColumnDefinition Width="4*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Entry Grid.Column="0" Text="{Binding CurrentUrl}" Margin="5"></Entry>
-                    <Button Grid.Column="1" BorderWidth="1" TextColor="Black" Background="Transparent" Text="GO" Margin="5" Clicked="Button_Clicked" ></Button>
+                    <Entry Grid.Column="0" Text="{Binding CurrentUrl}" HorizontalTextAlignment="Start" Margin="5"></Entry>
+                    <Button Grid.Column="1" BorderWidth="0.5" CornerRadius="20" TextColor="Black" Background="Transparent" Text="GO" Margin="5" Clicked="Button_Clicked" ></Button>
                 </Grid>
             </Grid>
         </Border>
