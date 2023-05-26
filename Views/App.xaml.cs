@@ -1,4 +1,6 @@
 ﻿using MauiApp3.Common;
+using Microsoft.AspNetCore.Components;
+
 namespace MauiApp3;
 public partial class App : Application
 {
@@ -11,6 +13,8 @@ public partial class App : Application
             FileCacheHelper.ClearCache();
             
         },null,TimeSpan.FromMinutes(20),TimeSpan.FromMinutes(20));
+      
     }
 
+   
 }

@@ -18,9 +18,9 @@
 
                     @foreach (var item in news)
                     {
-                        <li class="list-group-item"><a class="link-primary" style="text-decoration:none" href="@item.link">@item.title</a><span class="badge bg-danger">@(item.extra)</span></li>
-                         
-                       @* <li class="list-group-item"><p class="link-primary" style="text-decoration:none" @onclick="@(e=>navigate.OpenInWebView(item.link))" >@item.title</p><span class="badge bg-danger">@(item.extra)</span></li>*@
+                        @*<li class="list-group-item"><a class="link-primary" style="text-decoration:none" href="@item.link">@item.title</a><span class="badge bg-danger">@(item.extra)</span></li>
+                         *@
+                        <li class="list-group-item"><p class="link-primary" style="text-decoration:none" @onclick="@(e=>navigate.OpenInWebView(item.link))" >@item.title</p><span class="badge bg-danger">@(item.extra)</span></li>
                     }
 
 

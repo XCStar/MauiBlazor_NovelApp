@@ -28,7 +28,7 @@ public partial class MainPage : ContentPage
 		{
 
 #if ANDROID
-
+		    //替换之后还是无法截获一些连接，估计是blazor自身导致的
 			e.WebView.Settings.JavaScriptEnabled = true;
 			e.WebView.Settings.AllowFileAccess = true;
 			e.WebView.Settings.MediaPlaybackRequiresUserGesture = false;

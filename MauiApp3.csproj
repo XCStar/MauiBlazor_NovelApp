@@ -16,7 +16,7 @@
       
         <!--<UseMauiNuGets>true</UseMauiNuGets>-->
         <!-- Display name -->
-        <ApplicationTitle>First-Novel</ApplicationTitle>
+        <ApplicationTitle>News</ApplicationTitle>
        
         <!-- App Identifier -->
         <ApplicationId>com.companyname.mauiapp3</ApplicationId>

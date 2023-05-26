@@ -49,8 +49,12 @@ for(var i=0;i<links.length;i++)
 {
   links[i].onClick=null;
 }
+var imgs=document.querySelectorAll('img.HotQuestionsItem-img');
+for(var i=imgs.length-1;i>-1;i--)
+{
+  imgs[i].remove();
+}
 window.alert('clear');
 ".Replace("\r", "").Replace("\n", "");
-
     }
 }

@@ -18,7 +18,7 @@
 }
 else
 {
-    <NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))"   NextUrl="@(RazorHelper.BuilderUrl("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr))" RecordUrl="/records" ></NovelNaviageBar>
+    <NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))" NextUrl="@(RazorHelper.BuilderUrl("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr))" CatalogUrl="@(RazorHelper.BuilderUrl("/detial",type,NovelAddr,NovelId,NovelName,NovelAddr))" ></NovelNaviageBar>
    
     <div class="row mt-1 mb-1" >
         <div class="col-4"></div>
@@ -32,7 +32,7 @@ else
     </div>
     <div class="text-center"><h3 class="align-items-center">@novelContent.ChapterName</h3></div>
     <div style="background:#e6e6e6;font-size:@(fontSize)px">@(new MarkupString(novelContent.Content))</div>
-    <NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))" NextUrl="@(RazorHelper.BuilderUrl("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr))" CatalogUrl="@(RazorHelper.BuilderUrl("/detial",type,NovelAddr,NovelId,NovelName,NovelAddr))"></NovelNaviageBar>
+    <NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))" NextUrl="@(RazorHelper.BuilderUrl("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr))" RecordUrl="/records"></NovelNaviageBar>
 
 }
 @code {

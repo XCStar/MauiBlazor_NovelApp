@@ -13,7 +13,17 @@ namespace MauiApp3.Common
         {
             {nameof(SoduService),nameof(SoduService) },
             { nameof(BQGService),nameof(BQGService)},
-            {nameof(LinDianService),nameof(LinDianService)}
+            {nameof(LinDianService),nameof(LinDianService)},
+            {nameof(BQG1Service),nameof(BQG1Service)}
+
+        };
+        public static readonly Dictionary<string, string> novelKeyPairs = new Dictionary<string, string>
+        {
+               {nameof(SoduService),"搜读" },
+               {nameof(LinDianService),"零点" },
+               {nameof(BQG1Service),"笔趣阁(1)"},
+               {nameof(BQGService),"笔趣阁(cloudflare暂时无法抓取)"}
+
         };
         public static string GetServiceName(string key)
         {

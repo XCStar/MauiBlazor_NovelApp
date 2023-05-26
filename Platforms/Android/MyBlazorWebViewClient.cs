@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MauiApp3.Platforms.Android
 {
-    public class MyBlazorWebViewClient:WebViewClient
+    public class MyBlazorWebViewClient : WebViewClient
     {
         private readonly WebViewClient _blazorWebViewClient;
         public MyBlazorWebViewClient(WebViewClient blazorWebViewClient)
@@ -22,23 +22,28 @@ namespace MauiApp3.Platforms.Android
         }
         public override bool ShouldOverrideUrlLoading(global::Android.Webkit.WebView view, string url)
         {
-            _blazorWebViewClient.ShouldOverrideUrlLoading(view, url);
-         
-            return true;
+            if (!url.Contains("0.0.0.0"))
+            {
+                return false;
+            }
+            return _blazorWebViewClient.ShouldOverrideUrlLoading(view, url);
+
+
 
         }
         public override bool ShouldOverrideUrlLoading(global::Android.Webkit.WebView view, IWebResourceRequest request)
         {
-            var flag=_blazorWebViewClient.ShouldOverrideUrlLoading(view, request);
-            if (!flag)
+
+            if (request.Url.Host != "0.0.0.0")
             {
-                view.LoadUrl(request.Url.ToString());
+                return false;
             }
-            return true;
+            return _blazorWebViewClient.ShouldOverrideUrlLoading(view, request);
+
         }
         public override WebResourceResponse ShouldInterceptRequest(global::Android.Webkit.WebView view, IWebResourceRequest request)
         {
-            
+
             return _blazorWebViewClient.ShouldInterceptRequest(view, request);
         }
         public override void OnPageStarted(global::Android.Webkit.WebView view, string url, Bitmap favicon)
@@ -48,7 +53,7 @@ namespace MauiApp3.Platforms.Android
             {
                 view.LoadUrl($"javascript:{JavaScriptConfig.userAgentScript}");
             }
-          
+
         }
         public override void OnPageFinished(global::Android.Webkit.WebView view, string url)
         {
@@ -63,3 +68,4 @@ namespace MauiApp3.Platforms.Android
         }
     }
 }
+

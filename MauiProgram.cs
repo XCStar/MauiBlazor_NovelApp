@@ -49,7 +49,7 @@ public static class MauiProgram
 #endif
             builder.Services.AddMauiBlazorWebView();
 
-            
+           
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
@@ -109,7 +109,7 @@ public static class MauiProgram
             builder.Services.AddSingleton<SoduParser>();
             builder.Services.AddSingleton<BQGParser>();
             builder.Services.AddSingleton<LinDianParser>();
-
+            builder.Services.AddSingleton<BQG1Parser>();
             builder.Services.AddSingleton(provider => {
                 Func<string, IPageParser> accesor = key => {
                     if (key == nameof(SoduParser))
@@ -123,6 +123,10 @@ public static class MauiProgram
                     else if (key == nameof(LinDianParser))
                     {
                         return provider.GetService<LinDianParser>();
+                    }
+                    else if (key == nameof(BQG1Parser))
+                    {
+                        return provider.GetService<BQG1Parser>();
                     }
                     throw new ArgumentException($"不支持的类型{key}");
                 
@@ -145,6 +149,10 @@ public static class MauiProgram
                     {
                         return provider.GetService<LinDianService>();
                     }
+                    else if (key == nameof(BQG1Service))
+                    {
+                        return provider.GetService<BQG1Service>();
+                    }
                     throw new ArgumentException($"不支持的类型{key}");
 
 
@@ -155,6 +163,7 @@ public static class MauiProgram
             builder.Services.AddSingleton<SoduService>();
             builder.Services.AddSingleton<BQGService>();
             builder.Services.AddSingleton<LinDianService>();
+            builder.Services.AddSingleton<BQG1Service>();
             builder.Services.AddSingleton<IFileSystem>(FileSystem.Current);
             builder.Services.AddSingleton<NewsService>();
             return builder.Build();

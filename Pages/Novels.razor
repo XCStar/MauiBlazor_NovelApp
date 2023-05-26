@@ -1,4 +1,5 @@
 ﻿@page "/novels"
+@using MauiApp3.Common;
 @using MauiApp3.Data.Impl;
 @inject NavigationManager navigate;
 <MauiApp3.Components.NovelNaviageBar IndexUrl="/"
@@ -6,7 +7,7 @@
                                    RecordUrl="/records"></MauiApp3.Components.NovelNaviageBar>
 <div class="container">
     <ul class="list-group list-group-flush">
-        @foreach (var item in novelKeyPairs)
+        @foreach (var item in ServiceLoctor.novelKeyPairs)
         {
             var key = item.Key;
             <li class="list-group-item">
@@ -17,10 +18,5 @@
 </div>
 @code
 {
-    private static readonly Dictionary<string, string> novelKeyPairs = new Dictionary<string, string>
-    {
-           {nameof(SoduService),"搜读" },
-           {nameof(LinDianService),"零点" },
-           {nameof(BQGService),"笔趣阁(cloudflare暂时无法抓取)"}
-    };
+   
 }
