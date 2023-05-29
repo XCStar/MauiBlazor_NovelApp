@@ -28,5 +28,46 @@ namespace MauiApp3.Common
             }
            
         }
+        public static string HtmlFormat(string s)
+        {
+            var sb = new StringBuilder(s.Length*2);
+            sb.Append("<p>");
+            var index = 0;
+            while (index < s.Length)
+            {
+                if (s[index] == ' ' || s[index] == '\n' || s[index] == '\r')
+                {
+                    index++;
+                    continue;
+                }
+                if (s[index] == '。')
+                {
+                    if (index < s.Length - 1)
+                    {
+                        if (s[index + 1] == '"' ||s[index+1]=='“'|| s[index + 1] == '】')
+                        {
+                            sb.Append("。");
+                            sb.Append(s[index + 1]);
+                            sb.Append("</p>");
+                            index += 2;
+                            continue;
+                        }
+                       
+                    }
+                    sb.Append('。');
+                    sb.Append("</p>");
+                    sb.Append("<p>");
+                    index++;
+                }
+                else
+                {
+                    sb.Append(s[index]);
+                    index++;
+                }
+            }
+            
+            sb.Append("</p>");
+            return sb.ToString();
+        }
     }
 }

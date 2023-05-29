@@ -31,10 +31,12 @@ else
     <div class="col-4"></div>
     </div>
     <div class="text-center"><h3 class="align-items-center">@novelContent.ChapterName</h3></div>
-    <div style="background:#e6e6e6;font-size:@(fontSize)px">@(new MarkupString(novelContent.Content))</div>
+    <article  style="background:#e6e6e6;font-size:@(fontSize)px" class="heti">@(new MarkupString(novelContent.Content))</article>
     <NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))" NextUrl="@(RazorHelper.BuilderUrl("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr))" RecordUrl="/records"></NovelNaviageBar>
-
+    
 }
+
+
 @code {
     [Parameter] public string type { get; set; }
     [Parameter]
@@ -53,6 +55,13 @@ else
     public string Message = "Data Loading ............";
     public static int errCount = 0;
     private List<KeyValuePair<string, string>> refershUrl = new();
+    protected override void OnAfterRender(bool firstRender)
+    {
+
+        base.OnAfterRender(firstRender);
+
+        js.InvokeVoidAsync("const heti = new Heti('.heti'); heti.autoSpacing()");
+    }
     protected override async Task OnParametersSetAsync()
     {
         if (refershUrl.Count == 0)

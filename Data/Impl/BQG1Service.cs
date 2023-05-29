@@ -50,6 +50,10 @@ namespace MauiApp3.Data.Impl
                     var document = pageParser.LoadDocument(html);
                     novelContent = pageParser.ParseNovelContent(document);
                     novelContent.ChapterName = novelContent.ChapterName;
+                    if (novelContent.Content.Length > 3)
+                    {
+                        novelContent.Content = StringExtensions.HtmlFormat(novelContent.Content);
+                    }
                     //get chapater
                     var id = await DBHelper.GetRecordByNovelId(novelId);
                     if (id > 0)

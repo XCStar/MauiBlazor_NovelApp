@@ -50,7 +50,7 @@ namespace MauiApp3.Data.Impl
             var conentNode = document.QuerySelector("#content");
             if (conentNode != null)
             {
-                novelContent.Content = conentNode.TextContent;
+                novelContent.Content = conentNode.Text();
             }
             var nextNode = document.QuerySelector("#wrapper > div.content_read > div > div.bottem2 > a:nth-child(4)");
             if (nextNode != null)
