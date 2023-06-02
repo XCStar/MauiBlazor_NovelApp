@@ -35,29 +35,63 @@ namespace MauiApp3.Common
             var index = 0;
             while (index < s.Length)
             {
-                if (s[index] == ' ' || s[index] == '\n' || s[index] == '\r')
+                if (s[index] == '\n' || s[index] == '\r')
                 {
                     index++;
                     continue;
                 }
-                if (s[index] == '。')
+                if (s[index] == '【')
+                {
+                    sb.Append("<p>");
+                    sb.Append(s[index]);
+                    index++;
+                }
+                else if (s[index] == '】')
+                {
+                    sb.Append(s[index]);
+                    sb.Append("</p>");
+                    index++;
+                }
+                else if (s[index] == '。')
                 {
                     if (index < s.Length - 1)
                     {
-                        if (s[index + 1] == '"' ||s[index+1]=='“'|| s[index + 1] == '】')
+                        if (s[index + 1] == '”')
                         {
                             sb.Append("。");
                             sb.Append(s[index + 1]);
                             sb.Append("</p>");
+                            sb.Append("<p>");
                             index += 2;
                             continue;
                         }
-                       
+                        else if (s[index + 1] == '】')
+                        {
+                            index++;
+                            continue;
+                        }
+
                     }
                     sb.Append('。');
                     sb.Append("</p>");
                     sb.Append("<p>");
                     index++;
+                }
+                else if (s[index] == '！' || s[index] == '？')
+                {
+                    if (index < s.Length - 1)
+                    {
+                        if (s[index + 1] == '”')
+                        {
+                            sb.Append("。");
+                            sb.Append(s[index + 1]);
+                            sb.Append("</p>");
+                            sb.Append("<p>");
+                            index += 2;
+                            continue;
+                        }
+                    }
+                    sb.Append(s[index++]);
                 }
                 else
                 {

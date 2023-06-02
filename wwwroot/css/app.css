@@ -2,8 +2,8 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height:100%;
 }
-
 h1:focus {
     outline: none;
 }
@@ -34,8 +34,10 @@ a, .btn-link {
     color: red;
 }
 .loading {
- z-index:10000;
- display:none;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: none;
 }
 #blazor-error-ui {
     background: lightyellow;

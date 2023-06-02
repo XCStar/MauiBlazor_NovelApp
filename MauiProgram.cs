@@ -57,7 +57,7 @@ public static class MauiProgram
 
             
             builder.Services
-                .AddHttpClient(nameof(SoduService)).ConfigurePrimaryHttpMessageHandler(() =>
+                .AddHttpClient(nameof(KSKService)).ConfigurePrimaryHttpMessageHandler(() =>
                 {
                     return new HttpClientHandler
                     {
@@ -66,6 +66,16 @@ public static class MauiProgram
                     };
 
                 });
+            builder.Services
+               .AddHttpClient(nameof(SoduService)).ConfigurePrimaryHttpMessageHandler(() =>
+               {
+                   return new HttpClientHandler
+                   {
+                       AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip
+
+                   };
+
+               });
             builder.Services
                .AddHttpClient(nameof(LinDianService)).ConfigurePrimaryHttpMessageHandler(() =>
                {
@@ -110,6 +120,7 @@ public static class MauiProgram
             builder.Services.AddSingleton<BQGParser>();
             builder.Services.AddSingleton<LinDianParser>();
             builder.Services.AddSingleton<BQG1Parser>();
+            builder.Services.AddSingleton<KSKParser>();
             builder.Services.AddSingleton(provider => {
                 Func<string, IPageParser> accesor = key => {
                     if (key == nameof(SoduParser))
@@ -127,6 +138,10 @@ public static class MauiProgram
                     else if (key == nameof(BQG1Parser))
                     {
                         return provider.GetService<BQG1Parser>();
+                    }
+                    else if (key == nameof(KSKParser))
+                    {
+                        return provider.GetService<KSKParser>();
                     }
                     throw new ArgumentException($"不支持的类型{key}");
                 
@@ -153,6 +168,10 @@ public static class MauiProgram
                     {
                         return provider.GetService<BQG1Service>();
                     }
+                    else if (key == nameof(KSKService))
+                    {
+                        return provider.GetService<KSKService>();
+                    }
                     throw new ArgumentException($"不支持的类型{key}");
 
 
@@ -164,6 +183,7 @@ public static class MauiProgram
             builder.Services.AddSingleton<BQGService>();
             builder.Services.AddSingleton<LinDianService>();
             builder.Services.AddSingleton<BQG1Service>();
+            builder.Services.AddSingleton<KSKService>();
             builder.Services.AddSingleton<IFileSystem>(FileSystem.Current);
             builder.Services.AddSingleton<NewsService>();
             return builder.Build();

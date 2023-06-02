@@ -52,7 +52,6 @@ namespace MauiApp3.Data.Impl
                 {
                     var document = pageParser.LoadDocument(html);
                     novelContent = pageParser.ParseNovelContent(document);
-                    novelContent.ChapterName = novelContent.ChapterName;
                     //get chapater
                     var id = await DBHelper.GetRecordByNovelId(novelId);
                     if (id > 0)

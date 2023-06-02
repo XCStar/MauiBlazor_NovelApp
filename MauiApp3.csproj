@@ -67,11 +67,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="Resources\Raw\douyin.min.js" />
       <None Remove="Shared\NavMenu.razor.css" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="AngleSharp" Version="1.0.2-alpha-278" />
+        <PackageReference Include="Jint" Version="3.0.0-beta-2049" />
         <!--<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.0" />-->
         <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="*" />
