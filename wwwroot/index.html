@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer">
     <title>MauiApp3</title>
     <base href="/" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
@@ -10,7 +11,7 @@
     <link href="MauiApp3.styles.css" rel="stylesheet" />
     <link href="css/heti.min.css" rel="stylesheet" />
 </head>
-<body style="position:relative">
+<body>
     <div class="bg-opacity-75  container-fluid position-absolute loading">
         <div class="d-flex justify-content-center mt-5">
             <div class="spinner-border  text-success mt-5" role="status">
@@ -32,6 +33,96 @@
                 d.style.display = "block";
             } else {
                 d.style.display = "none";
+            }
+        }
+        function setVideoInfo(name,createtime) {
+            var title = document.querySelector(".video_title");
+            title.innerHTML = name;
+            console.log(createtime);
+            var time = document.querySelector(".video_time");
+            time.innerText = createtime;
+        }
+        function videoPlay(src, name, createtime) {
+            var video = document.querySelector(".video");
+            setVideoInfo(name, createtime);
+            video.src = src;
+            video.load();
+            video.play();
+        }
+        var hidedmCache = [];
+        var showDmCache = [];
+        function dmInit() {
+            if (hidedmCache.length == 0) {
+                for (var i = 0; i < 60; i++) {
+                    var videoBox = document.querySelector(".video_box");
+                    var txtSpan = document.createElement("span");
+                    txtSpan.className = "danmu";
+                    txtSpan.style.display = "none";
+                    videoBox.appendChild(txtSpan);
+                    hidedmCache.push(txtSpan);
+                }
+            }
+        }
+        var timerIntervalId = timerInterval = setInterval(() => {
+            console.log("正在执行interval,任务数量：" + showDmCache.length);
+            for (var i = showDmCache.length - 1; i > -1; i--) {
+
+                var span = showDmCache[i];
+                var left = span.offsetLeft;
+                left -= Math.random() * 10 + 8;
+                span.style.left = left + 'px';
+                if (left < -span.offsetWidth) {
+                    span.style.display = "none";
+                    showDmCache.splice(i, 1);
+                    hidedmCache.push(span);
+                    if (hidedmCache.length > 60) {
+                        var len = hidedmCache.length;
+                        while (len > 60) {
+                            hidedmCache.pop();
+                            len--;
+                        }
+                    }
+                }
+            }
+
+        }, 100);
+        var colors = ["red","blue","green","white","yellow"];
+        function videoDm(...args) {
+         
+            dmInit();
+            var videoBox = document.querySelector(".video_box");
+
+            for (var i = 0; i < args.length; i++) {
+                var txtSpan;
+                if (hidedmCache.length > 0) {
+                    txtSpan = hidedmCache.pop();
+                }
+                else {
+                    txtSpan = document.createElement("span");
+
+                    txtSpan.className = "danmu";
+                    txtSpan.style.display = "none";
+                    videoBox.appendChild(txtSpan);
+                }
+                txtSpan.innerHTML = args[i];
+                txtSpan.style.display = "inline";
+                var maxTop = videoBox.clientHeight - txtSpan.offsetHeight;
+                txtSpan.style.left = videoBox.clientWidth + Math.floor(Math.random() * 200) + "px";
+                txtSpan.style.top = Math.round(Math.random() * maxTop) + "px";
+                txtSpan.style.color = colors[Math.floor(Math.random() * colors.length)];
+                showDmCache.push(txtSpan);
+            }
+           
+            
+           
+        }
+        function clearDm() {
+            //clearInterval(timerIntervalId);
+            //timerIntervalId = 0;
+            while (showDmCache.length > 0) {
+                var span = showDmCache.pop();
+                span.style.display = "none";
+                hidedmCache.push(span);
             }
         }
     </script>

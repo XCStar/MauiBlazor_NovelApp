@@ -56,5 +56,6 @@ for(var i=imgs.length-1;i>-1;i--)
 }
 window.alert('clear');
 ".Replace("\r", "").Replace("\n", "");
+        public static readonly HashSet<string> userAgentHosts = new HashSet<string>();
     }
 }

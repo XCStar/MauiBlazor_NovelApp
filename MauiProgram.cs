@@ -55,7 +55,16 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
-            
+            builder.Services
+                .AddHttpClient(nameof(DYService)).ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    return new HttpClientHandler
+                    {
+                        AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip
+
+                    };
+
+                });
             builder.Services
                 .AddHttpClient(nameof(KSKService)).ConfigurePrimaryHttpMessageHandler(() =>
                 {
@@ -186,6 +195,7 @@ public static class MauiProgram
             builder.Services.AddSingleton<KSKService>();
             builder.Services.AddSingleton<IFileSystem>(FileSystem.Current);
             builder.Services.AddSingleton<NewsService>();
+            builder.Services.AddTransient<DYService>();
             return builder.Build();
         }
         catch (Exception ex)

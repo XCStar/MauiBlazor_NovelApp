@@ -92,6 +92,18 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Update="wwwroot\javascript\heti-addon.min.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <MauiAsset Update="Resources\Raw\douyin.min.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </MauiAsset>
+    </ItemGroup>
+
+    <ItemGroup>
       <MauiXaml Update="Views\AppShell.xaml">
         <Generator>MSBuild:Compile</Generator>
       </MauiXaml>
