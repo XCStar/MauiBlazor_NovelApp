@@ -5,16 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MauiApp3.Data.Impl
 {
     public class LinDianParser : BaseParser,IPageParser
     {
-       private static readonly HashSet<string> typeSets= new HashSet<string>() {
-         "科幻灵异","武侠仙侠","玄幻奇幻"
-       };
-        
+     
 
         public List<Chapter> ParseChapters(IHtmlDocument document)
         {
@@ -171,37 +169,43 @@ namespace MauiApp3.Data.Impl
         public NovelPageInfo ParseUpdateInfo(IHtmlDocument document)
         {
             var info = new NovelPageInfo();
-            var divNodes = document.QuerySelectorAll("div.layout div.tp-box");
-            if (divNodes is null)
+            var liNodes = document.QuerySelectorAll("ul.txt-list.txt-list-row5 li");
+            if (liNodes is null)
             {
                 return info;
             }
             info.Infos = new List<UpdateNovelInfo>();
-            foreach (var divNode in divNodes)
+            foreach (var liNode in liNodes)
             {
-                var typeNode = divNode.QuerySelector("h2");
-                if (typeNode is null)
+                if (liNode.Children.Length > 4)
                 {
-                    return info;
-                }
-              
-                if (typeSets.Contains(typeNode.TextContent))
-                {
-                    var linkNodes = divNode.QuerySelectorAll("li a");
-                    if (linkNodes is null)
-                    {
-                        return info;
-
-                    }
-                    foreach (var link in linkNodes)
-                    {
-                        var uInfo = new UpdateNovelInfo();
-                        uInfo.Name = link.TextContent;
-                        uInfo.Url = link.Attributes["href"].Value;
-                        info.Infos.Add(uInfo);
-                    }
+                    var updateInfo= new UpdateNovelInfo();
+                    updateInfo.NovelType = liNode.Children[0].TextContent;
+                    var node = liNode.Children[1].QuerySelector("a");
+                    updateInfo.Name = node?.TextContent;
+                    updateInfo.Url= node?.Attributes["href"]?.Value;
+                    node= liNode.Children[2].QuerySelector("a");
+                    updateInfo.LastChapter= node?.TextContent;
+                    updateInfo.LastChapterUrl = node?.Attributes["href"]?.Value;
+                    updateInfo.Author = liNode.Children[3]?.TextContent;
+                    updateInfo.UpdateTime = liNode.Children[4]?.TextContent;
+                    info.Infos.Add(updateInfo);
                 }
 
+            }
+            var pageNode = document.QuerySelector(".hd");
+            var text = pageNode.TextContent;
+            var match = Regex.Match(text, @"共 \d+ 部小说 当前：\d+/(\d+)");
+            if (match.Success && match.Groups.Count > 1)
+            {
+                if (int.TryParse(match.Groups[1].Value, out int count))
+                {
+                    info.PageCount = count;
+                }
+                else
+                {
+                    info.PageCount = 1;
+                }
             }
             return info;
         }

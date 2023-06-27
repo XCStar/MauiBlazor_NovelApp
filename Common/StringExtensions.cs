@@ -103,5 +103,29 @@ namespace MauiApp3.Common
             sb.Append("</p>");
             return sb.ToString();
         }
+        public  static IEnumerable<KeyValuePair<string, string>> GetCookie(IEnumerable<string> cookies)
+        {
+            var list = new List<KeyValuePair<string, string>>();
+            foreach (var cookie in cookies)
+            {
+                var cookieInfo = cookie.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                if (cookieInfo.Length > 1)
+                {
+                    var arr = cookieInfo.First().Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (arr.Length > 0)
+                    {
+                        var key = arr[0];
+                        var value = string.Empty;
+                        if (arr.Length > 1)
+                        {
+                            value = arr[1];
+                        }
+                        list.Add(new KeyValuePair<string, string>(key, value));
+                    }
+
+                }
+            }
+            return list;
+        }
     }
 }

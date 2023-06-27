@@ -16,10 +16,10 @@ using System.Threading.Tasks;
 
 namespace MauiApp3.Data.Impl
 {
-    public class SoduService : INovelDataService
+    public class SoduService : IDataService
     {
         private readonly IHttpClientFactory httpClientFactory;
-        private static readonly string baseUrl = "http://m.soduzw.com";
+        public string BaseUrl => "http://m.soduzw.com/";
         private static readonly string firstUrl = "/top/monthvisit/{0}.html";
         private static readonly string serachUrl = "/search.html?searchkey={0}&searchtype=novelname";
         private IPageParser pageParser;
@@ -31,16 +31,14 @@ namespace MauiApp3.Data.Impl
 
         }
 
-        public async Task<NovelPageInfo> VisitIndexPage(int pageNum = 1)
+        public async Task<NovelPageInfo> GetNovelList(int pageNum = 1)
         {
             var pageInfo = new NovelPageInfo();
             var url = string.Format(firstUrl, pageNum);
             var html = FileCacheHelper.Get(url);
             if (string.IsNullOrEmpty(html))
             {
-                var client = httpClientFactory.CreateClient(nameof(SoduService));
-                client.BaseAddress = new Uri(baseUrl);
-                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/107.0.0.0");
+                var client = GetHttpClient();
                 try
                 {
                     html = await client.GetStringAsync(url);
@@ -68,7 +66,7 @@ namespace MauiApp3.Data.Impl
             //get next pages
 
         }
-        public async Task<NovelInfo> GetNovel(string url, int pageNum = 1)
+        public async Task<NovelInfo> GetChapterList(string url, int pageNum = 1)
         {
             var novelInfo = new NovelInfo();
             if (pageNum > 1)
@@ -78,9 +76,7 @@ namespace MauiApp3.Data.Impl
             var html = FileCacheHelper.Get(url);
             if (string.IsNullOrEmpty(html))
             {
-                var client = httpClientFactory.CreateClient(nameof(SoduService));
-                client.BaseAddress = new Uri(baseUrl);
-                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/107.0.0.0");
+                var client = GetHttpClient();
                 try
                 {
                     html = await client.GetStringAsync(url);
@@ -103,15 +99,13 @@ namespace MauiApp3.Data.Impl
             novelInfo.CurrentPage = pageNum;
             return novelInfo;
         }
-        public async Task<NovelContent> GetChapter(string url, string novelId, string novleName, string novelAddr)
+        public async Task<NovelContent> GetChapterContent(string url, string novelId, string novleName, string novelAddr)
         {
             var novelContent = new NovelContent();
             var html = FileCacheHelper.Get(url);
             if (string.IsNullOrEmpty(html))
             {
-                var client = httpClientFactory.CreateClient(nameof(SoduService));
-                client.BaseAddress = new Uri(baseUrl);
-                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/107.0.0.0");
+                var client = GetHttpClient();
                 try
                 {
                     html = await client.GetStringAsync(url);
@@ -159,9 +153,7 @@ namespace MauiApp3.Data.Impl
             var pageInfo = new NovelPageInfo();
             var url = string.Format(serachUrl, searchText);
             string html = string.Empty;
-            var client = httpClientFactory.CreateClient(nameof(SoduService));
-            client.BaseAddress = new Uri(baseUrl);
-            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/107.0.0.0");
+            var client = GetHttpClient();
             try
             {
                 html = await client.GetStringAsync(url);
@@ -183,10 +175,27 @@ namespace MauiApp3.Data.Impl
                 throw ex;
             }
             return pageInfo;
-            //get next pages
 
         }
 
+        public HttpClient GetHttpClient()
+        {
+            var client = httpClientFactory.CreateClient(nameof(SoduService));
+            client.BaseAddress = new Uri(BaseUrl);
+            client.DefaultRequestHeaders.Add("User-Agent",HttpHeaderHelper.mobileUserAgent);
+            client.DefaultRequestHeaders.Add("referer", BaseUrl);
+            client.BaseAddress = new Uri(BaseUrl);
+            return client;
+        }
 
+        public string GetNovelTypeUrl(int pageNum)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string RandomTypeGeneroator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

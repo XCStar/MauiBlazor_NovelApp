@@ -5,7 +5,7 @@
 @using System.Text;
 @using MauiApp3.Data.Impl;
 @using MauiApp3.Data.Interfaces;
-@inject Func<string,INovelDataService> dataServiceFunc;
+@inject INovelService service;
 @inject NavigationManager Navigation;
 @inject IJSRuntime js;
 @if (novelInfo == null)
@@ -22,16 +22,18 @@ else
                                    NextUrl="@(nextUrl)"
                                    LastUrl="@(lastUrl)" />
     <div class="row container text-center mt-3">
-    <h1>@novelInfo.Name</h1>
-    <p>@novelInfo.Author</p>
-    <p>@novelInfo.NovelType</p>
-    <p>@novelInfo.LastChapter</p>
+        <h1>@novelInfo.Name</h1>
+        <p>@novelInfo.Author</p>
+        <p>@novelInfo.NovelType</p>
+        <p>@novelInfo.LastChapter</p>
+        <p>@novelInfo.WordCount</p>
     </div>
     <div class="container">
         <p>@novelInfo.Description</p>
     </div>
+@*     <a href="{detial}/#bottom" name="top" >去底部</a> *@
     <ul>
-        
+     
     @foreach (var item in novelInfo.Chapters)
     {
         <li class="media text-muted pt-3">
@@ -44,11 +46,11 @@ else
        
     }
     </ul>
+    @* <a href="#top" target="_top" name="bottom">去顶部</a> *@
     <MauiApp3.Components.NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))"
     PrevtUrl="@(prevUrl)"
     NextUrl="@(nextUrl)"
     LastUrl="@(lastUrl)">
-    
     </MauiApp3.Components.NovelNaviageBar>
     @if (novelInfo.TotalPage > 1)
     {
@@ -60,7 +62,7 @@ else
                     <option value="@(i+1)">@(i + 1)</option>
                 }
             </select>
-            <label class="input-group-text border-primary text-primary">          </label>
+            <label class="input-group-text border-primary text-primary">跳转</label>
         </div>
     }
 }
@@ -116,12 +118,12 @@ else
         try
         {
             await js.InvokeVoidAsync("loading", true);
-            INovelDataService service = dataServiceFunc(ServiceLoctor.GetServiceName(type));
+         
             if (pageNum is null)
             {
                 pageNum = 1;   
             }
-            novelInfo = await service.GetNovel(url,pageNum.Value);
+            novelInfo = await service.GetNovelChapterList(type,url,pageNum.Value);
 
         }
         catch (Exception ex)

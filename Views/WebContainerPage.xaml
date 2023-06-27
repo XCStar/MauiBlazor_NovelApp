@@ -25,7 +25,7 @@
             </Grid>
         </Border>
         <Grid Grid.Row="1">
-            <WebView x:Name="webView" Source="{Binding Url}" Navigating="webView_Navigating" Navigated="webView_Navigated" ></WebView>
+            <WebView x:Name="webView"  Source="{Binding Url}" Navigating="webView_Navigating" Navigated="webView_Navigated"  ></WebView>
         </Grid>
        
     </Grid>

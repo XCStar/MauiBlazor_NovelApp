@@ -16,15 +16,12 @@ public class MainActivity : MauiAppCompatActivity
         Window.SetFlags(Android.Views.WindowManagerFlags.TranslucentNavigation,Android.Views.WindowManagerFlags.TranslucentNavigation);
         Window.SetStatusBarColor(Android.Graphics.Color.Transparent);
         Window.SetNavigationBarColor(Android.Graphics.Color.Transparent);
-
-        //Window.SetFlags(Android.Views.WindowManagerFlags.HardwareAccelerated, Android.Views.WindowManagerFlags.HardwareAccelerated);
-        //BlazorWebViewHandler.ViewMapper.ModifyMapping(nameof(blazorwebc));
-       
         Microsoft.Maui.Handlers.WebViewHandler.Mapper.ModifyMapping(nameof(WebViewClient), (handler, view,method) =>
         {
             
             WebViewHandler.MapWebViewClient(handler,view);
-            handler.PlatformView.SetWebViewClient(new MyWebViewClient((WebViewHandler)handler));
+           
+            handler.PlatformView.SetWebViewClient(new CustomAndroidMauiWebClient((WebViewHandler)handler));
         });
         base.OnCreate(savedInstanceState);
     }

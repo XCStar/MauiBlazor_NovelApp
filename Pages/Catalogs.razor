@@ -6,7 +6,8 @@
 @using MauiApp3.Data.Impl;
 @using MauiApp3.Data.Interfaces;
 @using MauiApp3.Components;
-@inject Func<string,INovelDataService> dataServiceFunc;
+@using MauiApp3.Model;
+@inject INovelService service;
 @inject NavigationManager Navigation
 
 @inject IJSRuntime js;
@@ -30,8 +31,8 @@ else
         </div>
     <div class="col-4"></div>
     </div>
-    <div class="text-center"><h3 class="align-items-center">@novelContent.ChapterName</h3></div>
-    <article  style="background:#e6e6e6;font-size:@(fontSize)px" class="heti">@(new MarkupString(novelContent.Content))</article>
+    <div class="text-center "><h3 class="align-items-center">@novelContent.ChapterName</h3></div>
+    <div class="row"  style="background:#e6e6e6;font-size:@(fontSize)px">@(new MarkupString(novelContent.Content))</div>
     <NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))" NextUrl="@(RazorHelper.BuilderUrl("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr))" RecordUrl="/records"></NovelNaviageBar>
     
 }
@@ -68,14 +69,17 @@ else
         {
             refershUrl.Add( new KeyValuePair<string, string>("刷新", RazorHelper.BuilderUrl("/catalogs", type, url, NovelId, NovelName, NovelAddr, Guid.NewGuid().ToString())));
         }
-      
+
         try
         {
             await js.InvokeVoidAsync("loading", true);
             novelContent = null;
-            INovelDataService service = dataServiceFunc(ServiceLoctor.GetServiceName(type));
-            novelContent = await service.GetChapter(url, NovelId, NovelName, NovelAddr);
 
+            novelContent = await service.GetChapterContent(type,url, new Novel { Id=NovelId, Name=NovelName,Url=NovelAddr });
+            if (novelContent.Next == null)
+            {
+                novelContent.Next = string.Empty;  
+            }
         }
         catch (Exception ex)
         {

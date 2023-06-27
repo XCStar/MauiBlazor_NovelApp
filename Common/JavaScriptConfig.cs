@@ -26,11 +26,8 @@ namespace MauiApp3.Common
 ".Replace("\r", "").Replace("\n", "");
         public static readonly string zhiHuJavaSrcitpt = @"
 var style = document.querySelector('style');
-      style.innerHTML +='
-        .MobileAppHeader-downloadLink {
-          display: none !important;
-        }';
-function remove(sel) {document.querySelectorAll(sel).forEach( a => a.remove());};
+      style.innerHTML +='.MobileAppHeader-downloadLink {display: none !important;}';
+function remove(sel) {document.querySelectorAll(sel).forEach( a => a.style.display='none');};
 remove('DIV.AdvertImg.AdvertImg--isLoaded.MBannerAd-image');
 remove('DIV.Banner-adTag');
 remove('div.MBannerAd-third');
@@ -43,17 +40,18 @@ remove('.KfeCollection-VipRecommendCard');
 remove('div.MHotFeedAd-smallCard');
 remove('div[style = ""margin - bottom: 10px;""]');
 remove('div.Question-sideColumn');
-document.querySelector('.MBannerAd').parentNode.remove();
+remove('div .HotQuestions');
+remove('div.RelatedReadings');
+remove('div.MobileAppHeader-actions');
+remove('div.ecommerce-ad-box');
+remove('div.ecommerce-ad-commodity-box');
+document.querySelector('.MBannerAd').style.display='none';
 var links=document.querySelectorAll('a.HotQuestionsItem');
 for(var i=0;i<links.length;i++)
 {
   links[i].onClick=null;
 }
-var imgs=document.querySelectorAll('img.HotQuestionsItem-img');
-for(var i=imgs.length-1;i>-1;i--)
-{
-  imgs[i].remove();
-}
+remove('img.HotQuestionsItem-img');
 window.alert('clear');
 ".Replace("\r", "").Replace("\n", "");
         public static readonly HashSet<string> userAgentHosts = new HashSet<string>();

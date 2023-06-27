@@ -14,9 +14,9 @@ using MauiApp3.Common;
 namespace MauiApp3.Platforms.Android
 {
     
-    public class MyWebViewClient :MauiWebViewClient
+    public class CustomAndroidMauiWebClient :MauiWebViewClient
     {
-        public MyWebViewClient(WebViewHandler handler) :base(handler)
+        public CustomAndroidMauiWebClient(WebViewHandler handler) :base(handler)
         {
                 
         }

@@ -7,29 +7,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace MauiApp3.Data.Impl
 {
-    public class KSKService : INovelDataService
+    public class KSKService : IDataService
     {
+        //199.33.126.229  kuaishuku.com
+        //private static readonly string searchUrl = "http://m.kuaishuku.net/s.php";
         private static readonly string searchUrl = "http://m.kuaishuku.net/s.php";
         private readonly IHttpClientFactory httpClientFactory;
         private readonly IPageParser parser;
-        private readonly static string baseUrl = "http://m.kuaishuku.net";
+        public string BaseUrl => "http://m.kuaishuku.net";
+        private static string novelType ="-1";
         public KSKService(IHttpClientFactory httpClientFactory, Func<string, IPageParser> parserFunc)
         {
             this.httpClientFactory = httpClientFactory;
             this.parser =parserFunc(nameof(KSKParser)) ;
         }
-        public async Task<NovelContent> GetChapter(string url, string novelId, string novleName, string novelAddr)
+        public async Task<NovelContent> GetChapterContent(string url, string novelId, string novleName, string novelAddr)
         {
             var novelContent = new NovelContent();
             var html = string.Empty;
 
             try
             {
-                var client = httpClientFactory.CreateClient(nameof(KSKService));
-                AddDefaultHeader(client);
+                var client = GetHttpClient();
                 html = await client.GetStringAsync(url);
 
             }
@@ -70,7 +71,7 @@ namespace MauiApp3.Data.Impl
             return novelContent;
         }
 
-        public async Task<NovelInfo> GetNovel(string url, int pageNum = 1)
+        public async Task<NovelInfo> GetChapterList(string url, int pageNum = 1)
         {
             pageNum = pageNum == 0 ? 1 : pageNum;
             var novelInfo = new NovelInfo();
@@ -78,8 +79,7 @@ namespace MauiApp3.Data.Impl
             var html = string.Empty;
             try
             {
-                var client =httpClientFactory.CreateClient(nameof(KSKService));
-                AddDefaultHeader(client);
+                var client = GetHttpClient();
                 html = await client.GetStringAsync(url);
             }
             catch (Exception ex)
@@ -109,8 +109,7 @@ namespace MauiApp3.Data.Impl
             {
                 return novelPageInfo;
             }
-            var client= httpClientFactory.CreateClient(nameof(KSKService));
-            AddDefaultHeader(client);
+            var client = GetHttpClient();
             var formData = new FormUrlEncodedContent(new Dictionary<string, string> {
                 { "submit",""},
                 {"type","articlename" },{"s",searchText }
@@ -133,15 +132,18 @@ namespace MauiApp3.Data.Impl
           
         }
 
-        public async Task<NovelPageInfo> VisitIndexPage(int pageNum = 1)
+        public async Task<NovelPageInfo> GetNovelList(int pageNum = 1)
         {
             var pageInfo = new NovelPageInfo();
-            var url = string.Format($"/sort/2-{pageNum}.html");
+            if (novelType == "-1")
+            {
+                novelType = RandomTypeGeneroator();
+            }
+            var url = GetNovelTypeUrl(pageNum);
             var html = string.Empty;
             try
             {
-                var client = httpClientFactory.CreateClient(nameof(KSKService));
-                AddDefaultHeader(client);
+                var client = GetHttpClient();
                 html = await client.GetStringAsync(url);
             }
             catch (Exception ex)
@@ -162,13 +164,42 @@ namespace MauiApp3.Data.Impl
             }
             return pageInfo;
         }
-        private void AddDefaultHeader(HttpClient client)
+        
+       
+
+        public HttpClient GetHttpClient()
         {
-            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36 Edg/114.0.1823.24");
+            var client = httpClientFactory.CreateClient(nameof(KSKService));
+            client.DefaultRequestHeaders.Add("User-Agent",HttpHeaderHelper.mobileUserAgent);
             client.DefaultRequestHeaders.Add("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8");
             client.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-            client.DefaultRequestHeaders.Add("Referer", baseUrl);
-            client.BaseAddress =new Uri( baseUrl);
+            client.DefaultRequestHeaders.Add("Referer", BaseUrl);
+            client.BaseAddress = new Uri(BaseUrl);
+            return client;
+        }
+
+        public string GetNovelTypeUrl(int pageNum)
+        {
+            var url = "";
+            if (novelType == "0")
+            {
+                url = "sort/1";
+            }
+            else if (novelType == "1")
+            {
+                url = "sort/2";
+            }
+            else
+            {
+                url = "sort/6";
+            }
+            return $"/{url}-{pageNum}.html";
+        }
+
+        public string RandomTypeGeneroator()
+        {
+            var type = Random.Shared.Next(0,3);
+            return type.ToString();
         }
     }
 }

@@ -22,6 +22,7 @@ namespace MauiApp3.Common
             urlStringBuilder.Append(url);
             if (args.Length > 0)
             {
+                
                 urlStringBuilder.Append("/");
                 urlStringBuilder.Append(string.Join("/", args.Select(x => UrlEncoder.Default.Encode(x))));
             }

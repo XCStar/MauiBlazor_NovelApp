@@ -4,6 +4,10 @@ using Microsoft.Maui.LifecycleEvents;
 using System.Text;
 using MauiApp3.Data.Impl;
 using MauiApp3.Data.Interfaces;
+#if WINDOWS
+using MauiApp3.Platforms.Windows.Handlers;
+#endif
+using Microsoft.Maui.Handlers;
 #if ANDROID
 
 using Android.Content;
@@ -37,16 +41,13 @@ public static class MauiProgram
                 }).
                 ConfigureMauiHandlers(x =>
                 {
-                    
-#if ANDROID
 
-                //  x.AddHandler(typeof(Microsoft.Maui.Controls.WebView),typeof(MauiApp3.Platforms.Android.MltWebViewHandler));
+#if WINDOWS
 
 #endif
+
                 });
-#if ANDROID
 
-#endif
             builder.Services.AddMauiBlazorWebView();
 
            
@@ -60,8 +61,31 @@ public static class MauiProgram
                 {
                     return new HttpClientHandler
                     {
-                        AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip
+                        AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip,
+                        UseCookies=false
 
+                    };
+
+                });
+            builder.Services
+              .AddHttpClient(nameof(BookBenService)).ConfigurePrimaryHttpMessageHandler(() =>
+              {
+                  return new HttpClientHandler
+                  {
+                      AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip,
+                      UseCookies = false
+
+                  };
+
+              });
+            builder.Services
+                .AddHttpClient(nameof(SHU20Service)).ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    return new HttpClientHandler
+                    {
+                        AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip,
+                        UseCookies = false
+                       
                     };
 
                 });
@@ -114,32 +138,22 @@ public static class MauiProgram
                 };
 
             });
-            builder.Services.AddHttpClient(nameof(BQGService)).ConfigurePrimaryHttpMessageHandler(() =>
-            {
-                return new HttpClientHandler
-                {
-                    AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Brotli
-
-                };
-
-            });
+            
             builder.Services.AddSingleton<AppShell>();
 
             builder.Services.AddSingleton<SoduParser>();
-            builder.Services.AddSingleton<BQGParser>();
             builder.Services.AddSingleton<LinDianParser>();
             builder.Services.AddSingleton<BQG1Parser>();
             builder.Services.AddSingleton<KSKParser>();
+            builder.Services.AddSingleton<SHU20Parser>();
+            builder.Services.AddSingleton<BookBenParser>();
             builder.Services.AddSingleton(provider => {
                 Func<string, IPageParser> accesor = key => {
                     if (key == nameof(SoduParser))
                     {
                         return provider.GetService<SoduParser>();
                     }
-                    else if (key == nameof(BQGParser))
-                    {
-                        return provider.GetService<BQGParser>();
-                    }
+                   
                     else if (key == nameof(LinDianParser))
                     {
                         return provider.GetService<LinDianParser>();
@@ -152,7 +166,19 @@ public static class MauiProgram
                     {
                         return provider.GetService<KSKParser>();
                     }
-                    throw new ArgumentException($"不支持的类型{key}");
+                    else if (key == nameof(SHU20Parser))
+                    {
+                        return provider.GetService<SHU20Parser>();
+                    }
+                    else if (key == nameof(BookBenParser))
+                    {
+                        return provider.GetService<BookBenParser>();
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"不支持的类型{key}");
+                    }
+                
                 
                 
                 };
@@ -160,14 +186,10 @@ public static class MauiProgram
                 return accesor;
             });
             builder.Services.AddSingleton(provider => {
-                Func<string, INovelDataService> accesor = key => {
+                Func<string, IDataService> accesor = key => {
                     if (key == nameof(SoduService))
                     {
                         return provider.GetService<SoduService>();
-                    }
-                    else if (key == nameof(BQGService))
-                    {
-                        return provider.GetService<BQGService>();
                     }
                     else if (key == nameof(LinDianService))
                     {
@@ -181,21 +203,35 @@ public static class MauiProgram
                     {
                         return provider.GetService<KSKService>();
                     }
-                    throw new ArgumentException($"不支持的类型{key}");
+                    else if (key == nameof(SHU20Service))
+                    {
+                        return provider.GetService<SHU20Service>();
+                    }
+                    else if (key == nameof(BookBenService))
+                    {
+                        return provider.GetService<BookBenService>();
+                    }
+                    else {
+                        throw new ArgumentException($"不支持的类型{key}");
+                    }
+               
 
 
                 };
 
                 return accesor;
             });
+            builder.Services.AddSingleton<BookBenService>();
+            builder.Services.AddSingleton<SHU20Service>();
             builder.Services.AddSingleton<SoduService>();
-            builder.Services.AddSingleton<BQGService>();
+        
             builder.Services.AddSingleton<LinDianService>();
             builder.Services.AddSingleton<BQG1Service>();
             builder.Services.AddSingleton<KSKService>();
             builder.Services.AddSingleton<IFileSystem>(FileSystem.Current);
             builder.Services.AddSingleton<NewsService>();
             builder.Services.AddTransient<DYService>();
+            builder.Services.AddSingleton<INovelService, NovelService>();
             return builder.Build();
         }
         catch (Exception ex)

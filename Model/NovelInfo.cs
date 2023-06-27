@@ -8,14 +8,20 @@ using System.Threading.Tasks;
 
 namespace MauiApp3.Model
 {
-    public class NovelInfo
+    public class Novel 
     {
+        public string Id { get; set; }
         public string Url { get; set; }
         public string Name { get; set; }
+    }
+    public class NovelInfo:Novel
+    {
+    
         public string Author { get; set; }
         public string NovelType { get; set; }
         public string LastChapter { get; set; }
         public string LastChapterUrl { get; set; }
+        public string WordCount { get; set; }
         public string UpdateTime { get; set; }
         public string Description { get; set; }
         public List<Chapter> Chapters { get; set; }

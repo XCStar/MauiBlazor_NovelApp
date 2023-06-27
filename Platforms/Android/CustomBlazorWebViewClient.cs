@@ -15,10 +15,10 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace MauiApp3.Platforms.Android
 {
-    public class MyBlazorWebViewClient : WebViewClient
+    public class CustomBlazorWebViewClient : WebViewClient
     {
         private readonly WebViewClient _blazorWebViewClient;
-        public MyBlazorWebViewClient(WebViewClient blazorWebViewClient)
+        public CustomBlazorWebViewClient(WebViewClient blazorWebViewClient)
         {
 
             _blazorWebViewClient = blazorWebViewClient;
@@ -29,6 +29,11 @@ namespace MauiApp3.Platforms.Android
             if (!url.Contains("0.0.0.0"))
             {
                 return false;
+            }
+            if (url.StartsWith("https://m.weibo.cn/login"))
+            {
+                view.StopLoading();
+                return true;
             }
             return _blazorWebViewClient.ShouldOverrideUrlLoading(view, url);
 

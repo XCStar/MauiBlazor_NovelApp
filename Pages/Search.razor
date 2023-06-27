@@ -6,7 +6,7 @@
 @using System.Text.Encodings.Web;
 @using MauiApp3.Data.Impl;
 @using MauiApp3.Data.Interfaces;
-@inject Func<string,INovelDataService> dataServiceFunc;
+@inject INovelService service;
 @inject NavigationManager Navigation;
 @inject IJSRuntime js;
 <MauiApp3.Components.NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))" RecordUrl="/records"></MauiApp3.Components.NovelNaviageBar>
@@ -52,8 +52,7 @@
             {
                 await js.InvokeVoidAsync("loading", true);
                 novelPageInfo = null;
-                INovelDataService service = dataServiceFunc(ServiceLoctor.GetServiceName(type));
-                novelPageInfo = await service.Search(searchText);
+                novelPageInfo = await service.Search(type,searchText);
             }
             catch (Exception ex)
             {
