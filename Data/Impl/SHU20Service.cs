@@ -126,8 +126,6 @@ namespace MauiApp3.Data.Interfaces
 
         public async Task<NovelPageInfo> GetNovelList(int pageNum = 1)
         {
-
-
             if (novelType == "-1")
             {
                 novelType = RandomTypeGeneroator();
@@ -156,7 +154,6 @@ namespace MauiApp3.Data.Interfaces
         }
        
 
-
         public string GetNovelTypeUrl(int pageNum)
         {
             var url = "";
@@ -172,7 +169,7 @@ namespace MauiApp3.Data.Interfaces
             {
                 url = "kehuanhuan";
             }
-            return $"/{url}/{pageNum}";
+            return $"/{url}/{pageNum}/";
         }
 
         public string RandomTypeGeneroator()

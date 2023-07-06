@@ -10,6 +10,7 @@ namespace MauiApp3.Common
 {
     public static class RazorHelper
     {
+        public static int pageSize = 100;
         public static int fontSize = 21;
         private static readonly StringBuilder urlStringBuilder=new StringBuilder();
         public static string GetIndexUrl(string type)
@@ -24,7 +25,7 @@ namespace MauiApp3.Common
             {
                 
                 urlStringBuilder.Append("/");
-                urlStringBuilder.Append(string.Join("/", args.Select(x => UrlEncoder.Default.Encode(x))));
+                urlStringBuilder.Append(string.Join("/", args.Select(x =>string.IsNullOrEmpty(x)|| string.IsNullOrWhiteSpace(url) ? " ":UrlEncoder.Default.Encode(x))));
             }
             return urlStringBuilder.ToString();
         }

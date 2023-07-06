@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 namespace MauiApp3.Data.Impl
 {
@@ -73,9 +74,24 @@ namespace MauiApp3.Data.Impl
 
         public async Task<NovelInfo> GetChapterList(string url, int pageNum = 1)
         {
+            int pageSize = RazorHelper.pageSize;
+            var totalCount = 0;
             pageNum = pageNum == 0 ? 1 : pageNum;
             var novelInfo = new NovelInfo();
-            novelInfo.CurrentPage = pageNum;
+            if (pageNum > 1)
+            {
+                var chaptersJson = FileCacheHelper.Get(url);
+                if (!string.IsNullOrEmpty(chaptersJson))
+                {
+                    novelInfo = JsonSerializer.Deserialize<NovelInfo>(chaptersJson);
+                    totalCount = novelInfo.Chapters.Count;
+                    novelInfo.Chapters = novelInfo.Chapters.Skip(pageSize*(pageNum-1)).Take(pageSize).ToList();
+                    novelInfo.CurrentPage = pageNum;
+                    novelInfo.TotalPage = (totalCount + pageSize - 1) / pageSize;
+                    return novelInfo;
+                }
+            }
+            FileCacheHelper.DelFile(url);
             var html = string.Empty;
             try
             {
@@ -86,19 +102,22 @@ namespace MauiApp3.Data.Impl
             {
                 throw ex;
             }
-
             var document = parser.LoadDocument(html);
             if (document == null)
             {
                 return novelInfo;
             }
-            if (pageNum == 1)
-            {
-                novelInfo = parser.ParseNovel(document);
-            }
-
+            novelInfo = parser.ParseNovel(document);
             novelInfo.Chapters = parser.ParseChapters(document);
-            novelInfo.TotalPage = parser.ParseNovelPageCount(document);
+            novelInfo.CurrentPage = pageNum;
+            totalCount=novelInfo.Chapters.Count;
+            if (totalCount > pageSize)
+            {
+                var json = JsonSerializer.Serialize(novelInfo);
+                FileCacheHelper.Save(url, json);
+                novelInfo.Chapters = novelInfo.Chapters.Skip((pageNum - 1) * pageSize).Take(pageSize).ToList();
+            }
+            novelInfo.TotalPage = (totalCount + pageSize - 1) / pageSize;
             return novelInfo;
         }
 

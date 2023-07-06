@@ -17,6 +17,10 @@ namespace MauiApp3.Data
         }
         public async Task<NovelContent> GetChapterContent(string serviceName, string chapterUrl, Novel novel)
         {
+            if (string.IsNullOrEmpty(chapterUrl))
+            {
+                return new NovelContent {ChapterName="提示页",Content="无下一页" };
+            }
             var service = services(serviceName);
             return await service.GetChapterContent(chapterUrl,novel.Id,novel.Name,novel.Url);
         }

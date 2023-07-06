@@ -20,16 +20,19 @@
 else
 {
     <NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))" NextUrl="@(RazorHelper.BuilderUrl("/catalogs",type,novelContent.Next,NovelId,NovelName,NovelAddr))" CatalogUrl="@(RazorHelper.BuilderUrl("/detial",type,NovelAddr,NovelId,NovelName,NovelAddr))" ></NovelNaviageBar>
-   
-    <div class="row mt-1 mb-1" >
-        <div class="col-4"></div>
+
+    <div class="row mt-1 mb-1">
+        <div class="col-2">
+        </div>
         <div class="col-2">
             <button class="btn btn-outline-dark" @onclick="@(e=>SetFontSize(false))">-</button>
         </div>
+        <div class="col-4"></div>
         <div class="col-2">
             <button class="btn btn-outline-dark" @onclick="@(e=>SetFontSize())">+</button>
         </div>
-    <div class="col-4"></div>
+        <div class="col-2">
+        </div>
     </div>
     <div class="text-center "><h3 class="align-items-center">@novelContent.ChapterName</h3></div>
     <div class="row"  style="background:#e6e6e6;font-size:@(fontSize)px">@(new MarkupString(novelContent.Content))</div>
@@ -76,10 +79,7 @@ else
             novelContent = null;
 
             novelContent = await service.GetChapterContent(type,url, new Novel { Id=NovelId, Name=NovelName,Url=NovelAddr });
-            if (novelContent.Next == null)
-            {
-                novelContent.Next = string.Empty;  
-            }
+            
         }
         catch (Exception ex)
         {

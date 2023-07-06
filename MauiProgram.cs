@@ -84,11 +84,11 @@ public static class MauiProgram
                     return new HttpClientHandler
                     {
                         AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip,
-                        UseCookies = false
-                       
+                         UseCookies = false
                     };
 
                 });
+          
             builder.Services
                 .AddHttpClient(nameof(KSKService)).ConfigurePrimaryHttpMessageHandler(() =>
                 {

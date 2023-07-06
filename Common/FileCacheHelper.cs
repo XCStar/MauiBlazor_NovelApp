@@ -64,5 +64,22 @@ namespace MauiApp3.Common
             }
             return true;
         }
+        public static bool DelFile(string key) 
+        {
+            var basePath = FileSystem.Current.CacheDirectory;
+            var distPath = Path.Combine(basePath, "cache_html");
+            if (!Directory.Exists(distPath))
+            {
+                return true;
+            }
+            var fileName = MauiApp3.Common.StringExtensions.GetMd5(key);
+            var filePath = Path.Combine(distPath, fileName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+                return true;
+            }
+            return true;
+        }
     }
 }

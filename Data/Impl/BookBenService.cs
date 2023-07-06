@@ -30,10 +30,11 @@ namespace MauiApp3.Data.Impl
         public async Task<NovelContent> GetChapterContent(string url, string novelId, string novleName, string novelAddr)
         {
             var novelContent = new NovelContent();
-            if (string.IsNullOrEmpty(url))
+            if (string.IsNullOrEmpty(url)||string.IsNullOrWhiteSpace(url))
             {
                 novelContent.Content = "没有了";
                 novelContent.Next = "";
+                return novelContent;
             }
             var html = string.Empty;
             var client = GetHttpClient();
