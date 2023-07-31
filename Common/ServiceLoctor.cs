@@ -17,17 +17,23 @@ namespace MauiApp3.Common
             {nameof(BQG1Service),nameof(BQG1Service)},
              {nameof(KSKService),nameof(KSKService)},
             {nameof(SHU20Service),nameof(SHU20Service)},
-              {nameof(BookBenService),nameof(BookBenService)}
+              {nameof(BookBenService),nameof(BookBenService)},
+               {nameof(XS166Service),nameof(XS166Service)},
+                  {nameof(XPTService),nameof(XPTService)},
+            { nameof(QXSService),nameof(QXSService)}
 
         };
         public static readonly Dictionary<string, string> novelKeyPairs = new Dictionary<string, string>
         {
-               {nameof(SoduService),"搜读" },
-               {nameof(KSKService),"看书库"},
-                {nameof(SHU20Service),"SHU20"},
-                 {nameof(BookBenService),"iBookBen"},
-               {nameof(BQG1Service),"笔趣阁"},
-               {nameof(LinDianService),"零点" }
+             {nameof(KSKService),"看书库"},
+             {nameof(SHU20Service),"SHU20"},
+             {nameof(BookBenService),"iBookBen"},
+             {nameof(XS166Service),"166XS"},
+             {nameof(QXSService),"求小说" },
+             {nameof(BQG1Service),"笔趣阁"},
+             {nameof(SoduService),"搜读" },
+             {nameof(XPTService),"飘天(无法搜索)" },
+             {nameof(LinDianService),"零点" }
 
         };
         public static string GetServiceName(string key)

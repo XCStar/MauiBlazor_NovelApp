@@ -23,7 +23,8 @@ namespace MauiApp3.Data.Impl
         private static readonly string firstUrl = "/top/monthvisit/{0}.html";
         private static readonly string serachUrl = "/search.html?searchkey={0}&searchtype=novelname";
         private IPageParser pageParser;
-
+        private List<KeyValuePair<string, string>> novelTypes = new List<KeyValuePair<string, string>>();
+        public IEnumerable<KeyValuePair<string, string>> NovelTypes => novelTypes;
         public SoduService(IHttpClientFactory httpClientFactory, Func<string,IPageParser> parserFunc)
         {
             this.httpClientFactory = httpClientFactory;
@@ -31,7 +32,7 @@ namespace MauiApp3.Data.Impl
 
         }
 
-        public async Task<NovelPageInfo> GetNovelList(int pageNum = 1)
+        public async Task<NovelPageInfo> GetNovelList(string type,int pageNum = 1)
         {
             var pageInfo = new NovelPageInfo();
             var url = string.Format(firstUrl, pageNum);
@@ -188,14 +189,11 @@ namespace MauiApp3.Data.Impl
             return client;
         }
 
-        public string GetNovelTypeUrl(int pageNum)
+        public string GetNovelTypeUrl(string type, int pageNum)
         {
             throw new NotImplementedException();
         }
 
-        public string RandomTypeGeneroator()
-        {
-            throw new NotImplementedException();
-        }
+     
     }
 }

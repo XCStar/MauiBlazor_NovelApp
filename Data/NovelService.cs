@@ -15,6 +15,12 @@ namespace MauiApp3.Data
         {
                 this.services= services;
         }
+
+       
+        public IEnumerable<System.Collections.Generic.KeyValuePair<string, string>> GetNoveTypes(string servieName)
+        {
+            return services(servieName).NovelTypes;
+        }
         public async Task<NovelContent> GetChapterContent(string serviceName, string chapterUrl, Novel novel)
         {
             if (string.IsNullOrEmpty(chapterUrl))
@@ -34,7 +40,7 @@ namespace MauiApp3.Data
         public async Task<NovelPageInfo> GetNovelList(string serviceName, string type, int pageNum)
         {
             var service = services(serviceName);
-            return await service.GetNovelList(pageNum);
+            return await service.GetNovelList(type, pageNum);
         }
 
         public async Task<NovelPageInfo> Search(string serviceName, string searchText)

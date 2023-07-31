@@ -103,6 +103,59 @@ namespace MauiApp3.Common
             sb.Append("</p>");
             return sb.ToString();
         }
+        public static string HtmlForMat166(string s)
+        {
+          
+            var span = s.AsMemory();
+            var index= GetEndIndex(span, 0);
+            while (index != -1&&index<span.Length)
+            {
+                span=span.Slice(index);
+                index = GetEndIndex(span,0);
+            }
+            index= GetEndIndex(span);
+            if (index != -1)
+            {
+                span= span.Slice(0,index);
+            }
+            return span.ToString();
+        }
+        private static int GetEndIndex(ReadOnlyMemory<char> span, int index)
+        {
+            while (index < span.Length)
+            {
+                var c = span.Span[index];
+               
+                if (span.Span[index] == '/' &&index<span.Length-2&&span.Span[index + 1] == 'p'&& span.Span[index + 2] == '>')
+                {
+                    break;
+                }
+                if (span.Span[index] == '<' && index < span.Length - 1 && span.Span[index + 1] == 'b')
+                {
+                    return -1;
+                }
+                index++;
+            }
+            if (index == span.Length)
+            {
+                return -1;
+            }
+            return index+3;
+        }
+        private static int GetEndIndex(ReadOnlyMemory<char> span)
+        {
+            var index = 0;
+            while (index < span.Length)
+            {
+                if (span.Span[index] == '<' && index < span.Length - 1 && span.Span[index + 1] == 's')
+                {
+                    return index;
+                }
+                index++;
+            }
+            return -1;
+            
+        }
         public  static IEnumerable<KeyValuePair<string, string>> GetCookie(IEnumerable<string> cookies)
         {
             var list = new List<KeyValuePair<string, string>>();

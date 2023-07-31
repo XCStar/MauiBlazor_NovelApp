@@ -1,0 +1,199 @@
+﻿@page "/tetris"
+@using MauiApp3.Data.Extensions;
+@using MauiApp3.Model.Game;
+@using MauiApp3.Components;
+@inject IJSRuntime js;
+@inject TetrominoGenerator tetrominoGenerator;
+<div class="container" id="tetrisBox">
+    @if (grid != null)
+    {
+        <div class="tetris-container container" tabindex="0" @ref="gameBoardDiv">
+            @for (int i = grid.Height; i > 0; i--)
+            {
+                <div class="tertis-row">
+                    @for (int j = 1; j <= grid.Width; j++)
+                    {
+                        <TetrisGridCell Row="j" Column="i" Grid="grid" Tetromino="currentTetromino" cellWidth="cellWidth"></TetrisGridCell>
+                    }
+                </div>
+            }
+        </div>
+        <div class="row mt-2">
+            <div class="col-3 m-auto">
+                <button type="button" @onclick="RunGame" class="btn btn-outline-success align-middle">开始</button>
+            </div>
+            <div class="col-6">
+              <table>
+                    <tr><td colspan="3" class="text-center"><button @onclick=@(e=>KeyDown(new KeyboardEventArgs { Key="ArrowUp"})) class="btn btn-outline-success">↑</button></td></tr>
+                    <tr>
+                        <td class="align-content-center"><button class="btn btn-outline-success" @onclick=@(e=>KeyDown(new KeyboardEventArgs { Key="ArrowLeft"}))>←</button></td>
+                        <td class="align-content-center"><button class="btn btn-outline-success">-</button></td>
+                        <td class="align-content-center"><button class="btn btn-outline-success" @onclick=@(e=>KeyDown(new KeyboardEventArgs { Key="ArrowRight"}))>→</button></td>
+                    </tr>
+                    <tr><td colspan="3" class="text-center"><button class="btn btn-outline-success" @onclick=@(e=>KeyDown(new KeyboardEventArgs { Key="ArrowDown"}))>↓</button></td></tr>
+              </table>
+            </div>
+          
+            <div class="col-3 m-auto">
+                <p>分数:<span>@score</span></p>
+                <p>难度:<span>@level</span></p>
+            </div>
+        </div>
+     
+    }
+   
+</div>
+@code {
+
+    protected override async Task OnParametersSetAsync()
+    {
+        cellWidth = await js.InvokeAsync<int>("CaclWindowWidth", "#tetrisBox", 10, 20);
+        grid = new Grid(10, 20);
+        await base.OnParametersSetAsync();
+        return;
+    }
+
+    int score = 0;
+    int level = 1;
+    Grid grid;
+    int cellWidth = 0;
+    Tetromino currentTetromino;
+    private ElementReference gameBoardDiv;
+    public async Task RunGame()
+    {
+
+        grid.State = GameState.Playing;
+        await js.InvokeVoidAsync("SetFocusToElement",gameBoardDiv);
+        while (!grid.Cells.HasColumn(grid.Height+1))
+        {
+            await Refersh();
+            currentTetromino = tetrominoGenerator.CreateFromStyle(tetrominoGenerator.Next(),grid);
+            await RunCurrentTetromino();
+            await Refersh();
+            await ClearCompleteRows();
+            LevelChange();
+
+        }
+        grid.State = GameState.GameOver;
+    }
+    public async Task ClearCompleteRows()
+    {
+        List<int> rowsComplete = new List<int>();
+
+        //For each row
+        for (int i = 1; i <= grid.Height; i++)
+        {
+            //If every position in that row is filled...
+            if (grid.Cells.GetAllInRow(i).Count == grid.Width)
+            {
+                //Add the "complete" animation CSS class
+                grid.Cells.SetCssClass(i, "tetris-clear-row");
+
+                //Mark that row as complete
+                rowsComplete.Add(i);
+            }
+        }
+
+        //If there are any complete rows
+        if (rowsComplete.Any())
+        {
+            //Refresh the display to show the animation CSS
+            Refersh();
+
+            //Collapse the "higher" cells down to fill in the completed rows.
+            grid.Cells.CollapseRows(rowsComplete);
+
+            //Calculate the score for the completed row(s)
+            switch (rowsComplete.Count)
+            {
+                case 1: score += 40 * level;
+                    break;
+                case 2:
+                    score += 100 * level;
+                    break;
+                case 3:
+                    score += 300 * level;
+                    break;
+                case 4:
+                    score += 1200 * level;
+                    break;
+            }
+            //Delay for 1 second to allow animation to complete
+            await Task.Delay(1000);
+        }
+        grid.State = GameState.Playing;
+    }
+    public void LevelChange()
+    {
+        int counter = 1;
+        int scoreCopy = score;
+        while (scoreCopy > 4000)
+        {
+
+            counter++;
+            scoreCopy -= 4000;
+        }
+        int newLevel = counter;
+        if (newLevel != level)
+        {
+            standardDelay = 1000 - ((newLevel-1)*100);
+            level = newLevel;
+        }
+    }
+    public async Task RunCurrentTetromino()
+    {
+       
+        while (currentTetromino.CanMoveDown())
+        {
+
+            await Delay(standardDelay);
+            currentTetromino.MoveDown();
+        }
+        grid.Cells.AddMany(currentTetromino.CoveredCells.GetAll(),currentTetromino.CssClass);
+
+    }
+    public async Task Refersh()
+    {
+        cellWidth = await js.InvokeAsync<int>("CaclWindowWidth", "#tetrisBox", 10, 20);
+        StateHasChanged();
+    }
+    int standardDelay = 1000;
+    bool skipDelay = false;
+    public async Task Delay(int millis)
+    {
+
+        int totalDelay = 0;
+        while (totalDelay < millis && !skipDelay)
+        {
+
+            totalDelay += 50;
+            await Task.Delay(50);
+        }
+        skipDelay = false;
+    }
+    public async Task KeyDown(KeyboardEventArgs e)
+    {
+        if (grid != null && grid.State == GameState.Playing)
+        {
+
+            if (e.Key == "ArrowRight")
+            {
+                currentTetromino.MoveRight();   
+            }
+            if (e.Key == "ArrowLeft")
+            {
+                currentTetromino.MoveLeft();   
+            }
+            if (e.Key == "ArrowDown")
+            {
+                currentTetromino.MoveDown();
+            }
+            if (e.Key == "ArrowUp")
+            {
+                currentTetromino.Rotate();   
+            }
+            await Refersh();
+        }
+    }
+   
+}

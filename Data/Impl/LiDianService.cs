@@ -1,4 +1,5 @@
-﻿using MauiApp3.Common;
+﻿using AngleSharp.Dom;
+using MauiApp3.Common;
 using MauiApp3.Data.Interfaces;
 using MauiApp3.Model;
 using System.Text.Encodings.Web;
@@ -13,12 +14,17 @@ namespace MauiApp3.Data.Impl
        public string BaseUrl => "http://www.lidapoly.com";
         private IPageParser pageParser;
         private IHttpClientFactory _httpClientFactory;
-        private static readonly int novelType;
 
+        private List<KeyValuePair<string, string>> novelTypes = new List<KeyValuePair<string, string>>();
+        public IEnumerable<KeyValuePair<string, string>> NovelTypes => novelTypes;
         public LinDianService(IHttpClientFactory httpClientFactory, Func<string, IPageParser> parserFunc)
         {
             _httpClientFactory = httpClientFactory;
             pageParser = parserFunc.Invoke(nameof(LinDianParser));
+            
+            novelTypes.Add(new KeyValuePair<string, string>("玄幻奇幻", "1"));
+            novelTypes.Add(new KeyValuePair<string, string>("武侠仙侠", "2"));
+            novelTypes.Add(new KeyValuePair<string, string>("科幻灵异", "5"));
         }
         
 
@@ -156,10 +162,14 @@ namespace MauiApp3.Data.Impl
             return pageInfo;
         }
 
-        public async Task<NovelPageInfo> GetNovelList(int pageNum = 1)
+        public async Task<NovelPageInfo> GetNovelList(string type,int pageNum = 1)
         {
             var pageInfo = new NovelPageInfo();
-            var url = GetNovelTypeUrl(pageNum);
+            var url = GetNovelTypeUrl(type,pageNum);
+            if (string.IsNullOrEmpty(url))
+            {
+                return pageInfo; 
+            }
             var html = string.Empty;
             try
             {
@@ -198,27 +208,15 @@ namespace MauiApp3.Data.Impl
             return client;
         }
 
-        public string GetNovelTypeUrl(int pageNum)
+        public string GetNovelTypeUrl(string type,int pageNum)
         {
-            var url = "";
-            if (novelType == 0)
+            if (novelTypes.Any(x => x.Value == type))
             {
-                url = "1";
+                return $"/sort/{type}/{pageNum}.html";
             }
-            else if (novelType == 1)
-            {
-                url = "2";
-            }
-            else
-            {
-                url = "5";
-            }
-            return $"/sort/{url}/{pageNum}.html";
+            return string.Empty;
         }
 
-        public string RandomTypeGeneroator()
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

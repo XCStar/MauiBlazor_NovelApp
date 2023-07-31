@@ -4,6 +4,8 @@ using Microsoft.Maui.LifecycleEvents;
 using System.Text;
 using MauiApp3.Data.Impl;
 using MauiApp3.Data.Interfaces;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using MauiApp3.Data.Extensions;
 #if WINDOWS
 using MauiApp3.Platforms.Windows.Handlers;
 #endif
@@ -94,8 +96,10 @@ public static class MauiProgram
                 {
                     return new HttpClientHandler
                     {
-                        AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip
-
+                        AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip,
+                   
+                      
+                        
                     };
 
                 });
@@ -147,6 +151,9 @@ public static class MauiProgram
             builder.Services.AddSingleton<KSKParser>();
             builder.Services.AddSingleton<SHU20Parser>();
             builder.Services.AddSingleton<BookBenParser>();
+            builder.Services.AddSingleton<XS166Parser>();
+            builder.Services.AddSingleton<XPTParser>();
+            builder.Services.AddSingleton<QXSParser>();
             builder.Services.AddSingleton(provider => {
                 Func<string, IPageParser> accesor = key => {
                     if (key == nameof(SoduParser))
@@ -173,6 +180,18 @@ public static class MauiProgram
                     else if (key == nameof(BookBenParser))
                     {
                         return provider.GetService<BookBenParser>();
+                    }
+                    else if (key == nameof(XS166Parser))
+                    {
+                        return provider.GetService<XS166Parser>();
+                    }
+                    else if (key == nameof(XPTParser))
+                    {
+                        return provider.GetService<XPTParser>();
+                    }
+                    else if (key == nameof(QXSParser))
+                    {
+                        return provider.GetService<QXSParser>();
                     }
                     else
                     {
@@ -211,10 +230,23 @@ public static class MauiProgram
                     {
                         return provider.GetService<BookBenService>();
                     }
-                    else {
+                    else if (key == nameof(XS166Service))
+                    {
+                        return provider.GetService<XS166Service>();
+                    }
+                    else if (key == nameof(XPTService))
+                    {
+                        return provider.GetService<XPTService>();
+                    }
+                    else if (key == nameof(QXSService))
+                    {
+                        return provider.GetService<QXSService>();
+                    }
+                    else
+                    {
                         throw new ArgumentException($"不支持的类型{key}");
                     }
-               
+
 
 
                 };
@@ -224,7 +256,10 @@ public static class MauiProgram
             builder.Services.AddSingleton<BookBenService>();
             builder.Services.AddSingleton<SHU20Service>();
             builder.Services.AddSingleton<SoduService>();
-        
+            builder.Services.AddSingleton<XS166Service>();
+            builder.Services.AddSingleton<XPTService>();
+            builder.Services.AddSingleton<QXSService>();
+
             builder.Services.AddSingleton<LinDianService>();
             builder.Services.AddSingleton<BQG1Service>();
             builder.Services.AddSingleton<KSKService>();
@@ -232,6 +267,7 @@ public static class MauiProgram
             builder.Services.AddSingleton<NewsService>();
             builder.Services.AddTransient<DYService>();
             builder.Services.AddSingleton<INovelService, NovelService>();
+            builder.Services.TryAddSingleton<TetrominoGenerator>();
             return builder.Build();
         }
         catch (Exception ex)

@@ -1,0 +1,178 @@
+﻿@page "/index/{type}/{novelType?}/{pageNum:int?}"
+@using MauiApp3.Common;
+@using MauiApp3.Model;
+@using System.Text.Encodings.Web;
+@using System.Text;
+@using MauiApp3.Data.Impl;
+@using MauiApp3.Data.Interfaces;
+@inject INovelService service;
+@inject NavigationManager Navigation
+@inject IJSRuntime js;
+@if (novelPageInfo is null)
+{
+    <MauiApp3.Components.NovelNaviageBar IndexUrl="/"
+                                     RecordUrl="/records"
+                                  ></MauiApp3.Components.NovelNaviageBar>
+    <p><em>@Message</em></p>
+}
+else
+{
+    <div>
+        <form>
+            <div class="form-group mx-sm-3  mt-3">
+                <input type="text" class="form-control mb-3" @bind="searchText" placeholder="输入小说名称">
+                <button type="submit" class="btn btn-primary  float-end mr-2" @onclick=@(e=>Navigation.GoTo($"/search",type,searchText)) @onclick:preventDefault>搜索</button>
+            </div>
+
+        </form>
+    </div>
+    <div class="d-flex flex-column bd-highlight mb-3"></div>
+    @if (novelTypes != null && novelTypes.Count() > 0)
+    {
+        var index = 0;
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                @foreach (var item in novelTypes)
+                {
+                    var i = index;
+                    index++;
+                    var css = "nav-link";
+                    if (novelType is null)
+                    {
+                        novelType = item.Value;
+
+                    }
+                    if (novelType == item.Value)
+                    {
+                        css += " active";
+                    }
+                    <button class="@css" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#@novelType" type="button" role="tab" aria-controls="nav-home" @onclick=@(e=>SelectType(i))>@item.Key</button>
+                }
+            </div>
+        </nav>
+        
+    }
+   
+    <div class="p-2 bd-highlight" >
+        <p>当前页：@novelPageInfo.CurrentPage 总页数:@novelPageInfo.PageCount</p>
+        <MauiApp3.Components.NovelNaviageBar IndexUrl="/"
+                                       RecordUrl="/records"
+                                       NextUrl="@(nextUrl)"
+                                       LastUrl="@(lastUrl)"
+                                      ></MauiApp3.Components.NovelNaviageBar>
+    </div>
+    <div class="p-2 bd-highlight" id="@novelType">
+        <ul>
+            @if (novelPageInfo.Infos != null)
+            {
+                @foreach (var item in novelPageInfo.Infos)
+                {
+
+
+                    <li class="starter-template">
+                        <h1><p class="lead" @onclick=@(e=>Navigation.GoTo("/detial",type,item.Url,item.NovleId,item.Name,item.Url))>@item.Name</p></h1>
+                        <p>
+                            <span>@item.UpdateTime</span>
+                            <span>@item.LastChapter</span>
+                        </p>
+                        <p>
+                            <span>@item.NovelType</span>
+                            <span>@item.WordCount</span>
+                        </p>
+                    </li>
+                }
+            }
+
+        </ul>
+    </div>
+    <MauiApp3.Components.NovelNaviageBar IndexUrl="/"
+    RecordUrl="/records"
+    NextUrl="@(nextUrl)"
+    LastUrl="@(lastUrl)"
+    ></MauiApp3.Components.NovelNaviageBar>
+    
+    <div class="container">
+        <div class="input-group mb-3 mt-2">
+            <input type="text" class="form-control" placeholder="input page number" @bind=pageNum>
+            <button class="btn btn-outline-primary" @onclick=@(e=>GoToPage()) id="button-addon2">跳转</button>
+        </div>
+    </div>
+
+
+
+
+}
+
+@code {
+    [Parameter]
+    public int? pageNum { get; set; }
+    [Parameter] public string type { get; set; }
+    public string searchText { get; set; }
+    [Parameter]
+    public string novelType { get; set; }
+    private NovelPageInfo novelPageInfo;
+    public string Message = "Loading";
+    private string nextUrl => (novelPageInfo.PageCount - novelPageInfo.CurrentPage) switch
+    {
+        > 0 => RazorHelper.BuilderUrl("/index", type, novelType,(novelPageInfo.CurrentPage + 1).ToString()),
+        _ => string.Empty
+    };
+
+    private string lastUrl => (novelPageInfo.PageCount - novelPageInfo.CurrentPage) switch
+    {
+        >0 => RazorHelper.BuilderUrl("/index", type,novelType, (novelPageInfo.PageCount).ToString()),
+        _ => string.Empty
+    };
+    private string prevUrl=> novelPageInfo.CurrentPage switch
+    {
+        > 1 => RazorHelper.BuilderUrl("/index", type, novelType,(novelPageInfo.CurrentPage - 1).ToString()),
+        _ => string.Empty
+    };
+
+    IEnumerable<KeyValuePair<string, string>> novelTypes;
+    protected override async Task OnParametersSetAsync()
+    {
+        await js.InvokeVoidAsync("loading", true);
+        try
+        {
+            novelTypes = service.GetNoveTypes(type);
+            if (string.IsNullOrEmpty(novelType))
+            {
+                if (novelTypes.Count() > 0)
+                {
+                    novelType = novelTypes.FirstOrDefault().Value;
+                }
+
+            }
+          
+            novelPageInfo = await service.GetNovelList(type,novelType,pageNum.HasValue ? pageNum.Value : 1);
+        }
+        catch (Exception ex)
+        {
+            StateHasChanged();
+            Message = "发生错误" + ex.Message;
+        }
+        finally
+        {
+            await js.InvokeVoidAsync("loading", false);
+        }
+
+
+    }
+    public async Task SelectType(int index)
+    {
+        await js.InvokeVoidAsync("loading", true);
+        novelType = novelTypes.ElementAt(index).Value;
+        novelPageInfo = await service.GetNovelList(type, novelType,1);
+        StateHasChanged();
+        await js.InvokeVoidAsync("loading", false);
+    }
+    public void GoToPage()
+    {
+        if (pageNum != null && pageNum.Value != novelPageInfo.CurrentPage && pageNum.Value <= novelPageInfo.PageCount)
+        {
+            Navigation.GoTo("/index",type, pageNum.Value.ToString());
+        }
+
+    }
+}

@@ -16,16 +16,18 @@ namespace MauiApp3.Data.Impl
 {
     public class BQG1Service : IDataService
     {
+        public string BaseUrl => "http://www.biqugse.com";
         private readonly IHttpClientFactory httpClientFactory;
         private readonly IPageParser pageParser;
-        public string BaseUrl => "http://www.biqugse.com";
+       
         public BQG1Service(IHttpClientFactory httpClientFactory, Func<string, IPageParser> parserFunc)
         {
             this.httpClientFactory = httpClientFactory;
            
             this.pageParser = parserFunc(nameof(BQG1Parser));
         }
-
+        private List<KeyValuePair<string, string>> novelTypes = new List<KeyValuePair<string, string>>();
+        public IEnumerable<KeyValuePair<string, string>> NovelTypes => novelTypes;
         public async Task<NovelContent> GetChapterContent(string url, string novelId, string novleName, string novelAddr)
         {
             var novelContent = new NovelContent();
@@ -171,7 +173,7 @@ namespace MauiApp3.Data.Impl
             return novelInfo;
         }
 
-        public async Task<NovelPageInfo> GetNovelList(int pageNum = 1)
+        public async Task<NovelPageInfo> GetNovelList(string type,int pageNum = 1)
         {
             var pageInfo = new NovelPageInfo();
             var url = string.Format("/");
@@ -213,14 +215,10 @@ namespace MauiApp3.Data.Impl
             return client;
         }
 
-        public string GetNovelTypeUrl(int pageNum)
+        public string GetNovelTypeUrl(string type, int pageNum)
         {
             throw new NotImplementedException();
         }
-
-        public string RandomTypeGeneroator()
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }

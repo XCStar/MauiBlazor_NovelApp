@@ -1,4 +1,5 @@
-﻿using MauiApp3.Model;
+﻿
+using MauiApp3.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace MauiApp3.Data.Interfaces
         Task<NovelPageInfo> Search(string serviceName, string searchText);
         Task<NovelContent> GetChapterContent(string serviceName,string chapterUrl, Novel novel);
         Task<NovelInfo> GetNovelChapterList(string serviceName, string url, int pageNum);
+        IEnumerable<KeyValuePair<string,string>> GetNoveTypes(string servieName);
     }
 }

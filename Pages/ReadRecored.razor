@@ -114,11 +114,15 @@ else
         {
             return;   
         }
-        if (await DBHelper.DelAllRecord())
+        if (await Application.Current.MainPage.DisplayAlert("提示", "是否删除所有", "是", "否"))
         {
-            await Application.Current.MainPage.DisplayAlert("提示","删除完成！","确定");
-            Navigation.NavigateTo("/records",true);
+            if (await DBHelper.DelAllRecord())
+            {
+                await Application.Current.MainPage.DisplayAlert("提示", "删除完成！", "确定");
+                Navigation.NavigateTo("/records", true);
+            }
         }
+        
     }
     public async Task DelIds()
     {

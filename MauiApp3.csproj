@@ -8,6 +8,7 @@
         <OutputType>Exe</OutputType>
         <RootNamespace>MauiApp3</RootNamespace>
         <UseMaui>true</UseMaui>
+        <RunAOTCompilation>false</RunAOTCompilation>
         <SingleProject>true</SingleProject>
         <ImplicitUsings>enable</ImplicitUsings>
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
@@ -41,6 +42,11 @@
         <AndroidSigningKeyPass>123456</AndroidSigningKeyPass>
         <!--创建密钥存储文件时提供的密码-->
         <AndroidSigningStorePass>123456</AndroidSigningStorePass>
+        <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+        <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+        <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+        <GenerateTestArtifacts>True</GenerateTestArtifacts>
+        <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
         <!--创建密钥存储文件时提供的密码-->
       </PropertyGroup>
 
@@ -114,5 +120,9 @@
 
     <ItemGroup>
       <PackageReference Update="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.0-preview.2.7871" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\images\" />
     </ItemGroup>
 </Project>

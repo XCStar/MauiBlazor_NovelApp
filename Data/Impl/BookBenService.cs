@@ -1,4 +1,5 @@
-﻿using MauiApp3.Common;
+﻿using AngleSharp.Dom;
+using MauiApp3.Common;
 using MauiApp3.Data.Interfaces;
 using MauiApp3.Model;
 using System;
@@ -14,18 +15,25 @@ namespace MauiApp3.Data.Impl
 {
     public class BookBenService : IDataService
     {
-     
+        public string BaseUrl => "https://m.ibookben.com/";
+
+        private List<KeyValuePair<string,string>>novelTypes=new List<KeyValuePair<string,string>>();
+        public IEnumerable<KeyValuePair<string, string>> NovelTypes => novelTypes;
+
         private static readonly string searchUrl = "/search/";
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IPageParser _pageParser;
-        private static string novelType = "-1";
 
-        public string BaseUrl => "https://m.ibookben.com/";
+    
 
         public BookBenService(IHttpClientFactory httpClientFactory,Func<string,IPageParser> func) 
         {
             _httpClientFactory = httpClientFactory;
             _pageParser = func(nameof(BookBenParser));
+            
+            novelTypes.Add(new KeyValuePair<string,string>("玄幻", "xuanhuan"));
+            novelTypes.Add(new KeyValuePair<string, string>("修真", "xiuzhen"));
+            novelTypes.Add(new KeyValuePair<string, string>("科幻", "kehuan"));
         }
         public async Task<NovelContent> GetChapterContent(string url, string novelId, string novleName, string novelAddr)
         {
@@ -130,14 +138,15 @@ namespace MauiApp3.Data.Impl
             return novelPageInfo;
         }
 
-        public async Task<NovelPageInfo> GetNovelList(int pageNum = 1)
+        public async Task<NovelPageInfo> GetNovelList(string type, int pageNum = 1)
         {
-            if (novelType == "-1")
-            {
-                novelType =RandomTypeGeneroator();
-            }
             var client = GetHttpClient();
-            var html = await client.GetStringAsync(GetNovelTypeUrl(pageNum));
+            var url = GetNovelTypeUrl(type, pageNum);
+            if (string.IsNullOrEmpty(url))
+            {
+                return new NovelPageInfo();
+            }
+            var html = await client.GetStringAsync(url);
             if (string.IsNullOrEmpty(html))
             {
                 return new NovelPageInfo();
@@ -159,28 +168,15 @@ namespace MauiApp3.Data.Impl
             return client;
         }
        
-        public string GetNovelTypeUrl(int pageNum)
+        public string GetNovelTypeUrl(string type,int pageNum)
         {
-            var url = "";
-            if (novelType == "0")
+            if (novelTypes.Any(x => x.Value == type))
             {
-                url = "xuanhuan";
+                return $"/category/{type}/{pageNum}.html";
             }
-            else if (novelType == "1")
-            {
-                url = "xiuzhen";
-            }
-            else
-            {
-                url = "kehuanhuan";
-            }
-            return $"/category/{url}/{pageNum}.html";
+            return string.Empty;
         }
 
-        public string RandomTypeGeneroator()
-        {
-            var type = Random.Shared.Next(0,3);
-            return type.ToString();
-        }
+       
     }
 }

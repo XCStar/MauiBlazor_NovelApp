@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Browser;
+using AngleSharp.Dom;
 using MauiApp3.Common;
 using MauiApp3.Data.Interfaces;
 using MauiApp3.Model;
@@ -17,12 +18,17 @@ namespace MauiApp3.Data.Impl
         private static readonly string searchUrl = "http://m.kuaishuku.net/s.php";
         private readonly IHttpClientFactory httpClientFactory;
         private readonly IPageParser parser;
-        public string BaseUrl => "http://m.kuaishuku.net";
-        private static string novelType ="-1";
+        public string BaseUrl => "http://m.kuaishuku.net/";
+        private List<KeyValuePair<string, string>> novelTypes = new List<KeyValuePair<string, string>>();
+        public IEnumerable<KeyValuePair<string, string>> NovelTypes => novelTypes;
         public KSKService(IHttpClientFactory httpClientFactory, Func<string, IPageParser> parserFunc)
         {
             this.httpClientFactory = httpClientFactory;
             this.parser =parserFunc(nameof(KSKParser)) ;
+            
+            novelTypes.Add(new KeyValuePair<string, string>("玄幻魔法","1"));
+            novelTypes.Add(new KeyValuePair<string, string>("武侠修真", "2"));
+            novelTypes.Add(new KeyValuePair<string, string>("科幻", "6"));
         }
         public async Task<NovelContent> GetChapterContent(string url, string novelId, string novleName, string novelAddr)
         {
@@ -151,14 +157,15 @@ namespace MauiApp3.Data.Impl
           
         }
 
-        public async Task<NovelPageInfo> GetNovelList(int pageNum = 1)
+        public async Task<NovelPageInfo> GetNovelList(string type,int pageNum = 1)
         {
             var pageInfo = new NovelPageInfo();
-            if (novelType == "-1")
+            
+            var url = GetNovelTypeUrl(type,pageNum);
+            if (string.IsNullOrEmpty(url))
             {
-                novelType = RandomTypeGeneroator();
+                return pageInfo;
             }
-            var url = GetNovelTypeUrl(pageNum);
             var html = string.Empty;
             try
             {
@@ -197,28 +204,16 @@ namespace MauiApp3.Data.Impl
             return client;
         }
 
-        public string GetNovelTypeUrl(int pageNum)
+        public string GetNovelTypeUrl(string type, int pageNum)
         {
-            var url = "";
-            if (novelType == "0")
+            if (novelTypes.Any(x => x.Value == type))
             {
-                url = "sort/1";
+                 return $"/sort/{type}-{pageNum}.html";
             }
-            else if (novelType == "1")
-            {
-                url = "sort/2";
-            }
-            else
-            {
-                url = "sort/6";
-            }
-            return $"/{url}-{pageNum}.html";
+            return string.Empty;
+           
         }
 
-        public string RandomTypeGeneroator()
-        {
-            var type = Random.Shared.Next(0,3);
-            return type.ToString();
-        }
+        
     }
 }

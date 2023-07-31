@@ -11,7 +11,7 @@
         {
             var key = item.Key;
             <li class="list-group-item">
-                <p class="link-success align-middle" @onclick="@(e=>navigate.NavigateTo($"/index/{key}/1"))">@item.Value</p>
+                <p class="link-success align-middle" @onclick="@(e=>navigate.NavigateTo($"/index/{key}"))">@item.Value</p>
             </li>
         }
     </ul>
