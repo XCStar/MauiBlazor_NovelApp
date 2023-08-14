@@ -14,6 +14,7 @@ namespace MauiApp3.Common
         {
             {nameof(SoduService),nameof(SoduService) },
             {nameof(LinDianService),nameof(LinDianService)},
+              {nameof(MK99Service),nameof(MK99Service)},
             {nameof(BQG1Service),nameof(BQG1Service)},
              {nameof(KSKService),nameof(KSKService)},
             {nameof(SHU20Service),nameof(SHU20Service)},
@@ -28,6 +29,7 @@ namespace MauiApp3.Common
              {nameof(KSKService),"看书库"},
              {nameof(SHU20Service),"SHU20"},
              {nameof(BookBenService),"iBookBen"},
+             {nameof(MK99Service),"MK99"},
              {nameof(XS166Service),"166XS"},
              {nameof(QXSService),"求小说" },
              {nameof(BQG1Service),"笔趣阁"},
