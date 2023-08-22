@@ -15,8 +15,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
         <!--<TrimMode>partial</TrimMode>-->
-         <PublishReadyToRun>false</PublishReadyToRun> 
-      
+         <PublishReadyToRun>false</PublishReadyToRun>
+        <!--<PublishAot>true</PublishAot>
+        <PublishAotUsingRuntimePack>true</PublishAotUsingRuntimePack>-->
         <!--<UseMauiNuGets>true</UseMauiNuGets>-->
         <!-- Display name -->
         <ApplicationTitle>News</ApplicationTitle>
