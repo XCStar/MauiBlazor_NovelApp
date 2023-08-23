@@ -6,12 +6,13 @@ using MauiApp3.Data.Impl;
 using MauiApp3.Data.Interfaces;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MauiApp3.Data.Extensions;
+using MauiApp3.Views;
 #if WINDOWS
 using MauiApp3.Platforms.Windows.Handlers;
 #endif
 using Microsoft.Maui.Handlers;
 #if ANDROID
-
+using Com.Benjaminwan.Ocrlibrary;
 using Android.Content;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
@@ -144,7 +145,7 @@ public static class MauiProgram
             });
             
             builder.Services.AddSingleton<AppShell>();
-
+            builder.Services.AddSingleton<OCR>();
             builder.Services.AddSingleton<SoduParser>();
             builder.Services.AddSingleton<LinDianParser>();
             builder.Services.AddSingleton<BQG1Parser>();
@@ -278,6 +279,11 @@ public static class MauiProgram
             builder.Services.AddTransient<DYService>();
             builder.Services.AddSingleton<INovelService, NovelService>();
             builder.Services.TryAddSingleton<TetrominoGenerator>();
+            builder.Services.AddSingleton<IFilePicker>(FilePicker.Default);
+#if ANDROID
+           builder.Services.AddSingleton<OcrEngine>();
+           builder.Services.AddSingleton<Android.Content.Context>(Android.App.Application.Context);
+#endif
             return builder.Build();
         }
         catch (Exception ex)

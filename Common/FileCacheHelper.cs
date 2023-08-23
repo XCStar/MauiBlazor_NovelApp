@@ -57,10 +57,11 @@ namespace MauiApp3.Common
         public static bool ClearCache()
         {
             var basePath = FileSystem.Current.CacheDirectory;
-            var distPath = Path.Combine(basePath, "cache_html");
-            if (Directory.Exists(distPath))
+            var dirs= Directory.GetDirectories(basePath);
+            foreach (var dir in dirs) 
             {
-                Directory.Delete(distPath, true);
+                Directory.Delete(dir, true);
+
             }
             return true;
         }

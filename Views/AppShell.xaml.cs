@@ -8,6 +8,7 @@ public partial class AppShell : Shell
 	{
 		Routing.RegisterRoute(nameof(MainPage),typeof(MainPage));
 		Routing.RegisterRoute(nameof(WebContainerPage),typeof(WebContainerPage));
+		Routing.RegisterRoute(nameof(OCR), typeof(OCR));
 		InitializeComponent();
 	}
 }

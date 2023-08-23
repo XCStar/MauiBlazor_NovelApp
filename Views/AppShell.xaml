@@ -17,6 +17,12 @@
             Route="WebContainerPage" NavigationPage.HasNavigationBar="False">
             </ShellContent>
         </Tab>
+        <Tab Title="OCR">
+            <ShellContent 
+             ContentTemplate="{DataTemplate local:OCR}"
+             Route="OCR" NavigationPage.HasNavigationBar="False">
+            </ShellContent>
+        </Tab>
     </TabBar>
 
 </Shell>

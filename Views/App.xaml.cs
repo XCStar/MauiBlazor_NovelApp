@@ -8,6 +8,7 @@ public partial class App : Application
 	public App(AppShell mainPage)
 	{
         InitializeComponent();
+       
         MainPage = mainPage;
         _timer = new Timer(s => {
             FileCacheHelper.ClearCache();
