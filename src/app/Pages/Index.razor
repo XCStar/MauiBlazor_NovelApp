@@ -1,0 +1,38 @@
+﻿@page "/"
+@using MauiApp3.Common;
+@using MauiApp3.Data;
+@using MauiApp3.Data.Impl;
+@inject NavigationManager Navigation;
+@inject SoduService soduService;
+@inject IJSRuntime js;
+@using Jint;
+<div class="row">
+    <a  @onclick=@(e=>Navigation.GoTo("/newsweb")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>今日头条</a>
+</div>
+<div class="row">
+    <a @onclick=@(e=>Navigation.GoTo("/novels")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>小 说</a>
+</div>
+
+<div class="row">
+    <a @onclick=@(e=>Navigation.GoTo("/records")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>阅读记录</a>
+</div>
+@*/tetris*@
+<div class="row">
+    <a @onclick=@(e=>Navigation.GoTo("/video")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>DY</a>
+</div>
+<div class="row">
+    <a @onclick=@(e=>Navigation.GoTo("/tetris")) class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>Game</a>
+</div>
+<div class="row">
+    <a @onclick=Clear class="btn btn-lg btn-outline-success mt-5 btn-block" @onclick:preventDefault>清除缓存</a>
+</div>
+@code {
+   
+    public async Task Clear()
+    {
+        if (FileCacheHelper.ClearCache())
+        {
+            await Application.Current.MainPage.DisplayAlert("提示","清除成功！","确认");
+        }
+    }
+} 

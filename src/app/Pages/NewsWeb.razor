@@ -1,0 +1,62 @@
+﻿@page "/newsweb"
+@using MauiApp3.Model;
+@using MauiApp3.Data;
+@using MauiApp3.Common;
+@inject NewsService newService;
+@inject IJSRuntime js;
+@inject NavigationManager navigate;
+<MauiApp3.Components.NovelNaviageBar IndexUrl="/"
+                                   NovelUrl="/novels"
+                                     RecordUrl="/records"></MauiApp3.Components.NovelNaviageBar>
+<div class="container">
+    <ul class="list-group list-group-flush">
+       
+        <li class="list-group-item"><span class="link-success align-middle" @onclick="@(e=>navigate.OpenInWebView("https://www.cnblogs.com/"))">博客园</span></li>
+        @*<li class="list-group-item"><a class="link-success align-middle" href="https://www.cnblogs.com/">博客园</a></li>*@
+        @foreach (var item in newWebs)
+        {
+            <li class="list-group-item"><span class="link-success align-middle" @onclick="@(e=>GetNews(item.id,item.falg))">@item.name</span></li>
+        }
+     
+    </ul>
+</div>
+@code {
+    private List<(int id, bool falg, string name)> newWebs = new List<(int id, bool falg, string name)>
+    {
+(1,true,"知乎"),
+(1,false,"微博"),
+(69,true,"今日头条"),
+(132,false,"开发者头条"),
+(54,false,"GitHub"),
+(89,false,"看雪"),
+(327,false,"安全客"),
+(326,false,"FreeBuf"),
+(2,false,"百度"),
+(18,true,"B站"),
+(12,true,"开源中国"),
+(6,true,"IT之家"),
+(68,false,"52破解"),
+(221,false,"抖音"),
+(5832,false,"起点"),
+(5846,false,"纵横"),
+(125,false,"知乎日报"),
+(20,false,"AcFun"),
+(369,false,"历史上今天"),
+(137,false,"少数派 "),
+(11,false,"36氪"),
+(46,false,"天涯")
+    };
+    public async Task GetNews(int id, bool flag = true)
+    {
+        try
+        {
+            await js.InvokeVoidAsync("loading", true);
+            navigate.GoTo("/news",new string []{ id.ToString(), flag.ToString() });
+        }
+        finally
+        {
+            await js.InvokeVoidAsync("loading", false);
+        }
+       
+    }
+}

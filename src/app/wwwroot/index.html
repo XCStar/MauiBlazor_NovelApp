@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer">
+    <title>MauiApp3</title>
+    <base href="/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="css/game.css" rel="stylesheet" />
+    <link href="MauiApp3.styles.css" rel="stylesheet" />
+    <link href="css/heti.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="bg-opacity-75  container-fluid position-absolute loading">
+        <div class="d-flex justify-content-center mt-5">
+            <div class="spinner-border  text-success mt-5" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
+    <div id="app">Loading...</div>
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+    <script type="text/javascript">
+       
+        function loading(open) {
+            var d = document.querySelector(".loading");
+            if (open) {
+                d.style.display = "block";
+            } else {
+                d.style.display = "none";
+            }
+        }
+        function setVideoInfo(name,createtime) {
+            var title = document.querySelector(".video_title");
+            title.innerHTML = name;
+            console.log(createtime);
+            var time = document.querySelector(".video_time");
+            time.innerText = createtime;
+        }
+        function videoPlay(src, name, createtime) {
+            var video = document.querySelector(".video");
+            setVideoInfo(name, createtime);
+            video.src = src;
+            video.load();
+            video.play();
+        }
+        var hidedmCache = [];
+        var showDmCache = [];
+        var videoBox;
+        var timerIntervalId = 0;
+        var tryCount = 0;
+        function dmInit() {
+            if (videoBox===undefined)
+            {
+                videoBox = document.querySelector(".video_box");
+                timerIntervalId = 0;
+                tryCount = 0;
+            }
+            if (hidedmCache.length == 0) {
+                for (var i = 0; i < 60; i++) {
+                    var txtSpan = document.createElement("span");
+                    txtSpan.className = "danmu";
+                    txtSpan.style.display = "none";
+                    videoBox.appendChild(txtSpan);
+                    hidedmCache.push(txtSpan);
+                }
+            }
+            console.log("timerIntervalId:" + timerIntervalId);
+            if (timerIntervalId == 0)
+            {
+                timerIntervalId =setInterval(() => {
+                    console.log("正在执行interval,任务数量：" + showDmCache.length);
+                    for (var i = showDmCache.length - 1; i > -1; i--) {
+
+                        var span = showDmCache[i];
+                        var left = span.offsetLeft;
+                        left -= Math.random() * 10 + 8;
+                        span.style.left = left + 'px';
+                        if (left < -videoBox.offsetWidth) {
+                            span.style.display = "none";
+                            showDmCache.splice(i, 1);
+                            hidedmCache.push(span);
+                            if (hidedmCache.length > 60) {
+                                var len = hidedmCache.length;
+                                while (len > 60) {
+                                    hidedmCache.pop();
+                                    len--;
+                                }
+                            }
+                        }
+                    }
+                    if (showDmCache.length == 0) {
+                        tryCount++;
+                        if (tryCount>150)
+                        {
+                            console.log("close dm");
+                            clearInterval(timerIntervalId);
+                            timerIntervalId = 0;
+                            tryCount = 0;
+                        }
+                    }
+
+                }, 100);
+                console.log("timerIntervalId has init" + timerIntervalId);
+            }
+        }
+        var colors = ["red","blue","green","white","yellow"];
+        function videoDm(...args) {
+            dmInit();
+            for (var i = 0; i < args.length; i++) {
+                var txtSpan;
+                if (hidedmCache.length > 0) {
+                    txtSpan = hidedmCache.pop();
+                }
+                else {
+                    txtSpan = document.createElement("span");
+
+                    txtSpan.className = "danmu";
+                    txtSpan.style.display = "none";
+                    videoBox.appendChild(txtSpan);
+                }
+                txtSpan.innerHTML = args[i];
+                txtSpan.style.display = "inline";
+                var maxTop = videoBox.clientHeight - txtSpan.offsetHeight;
+                txtSpan.style.left = videoBox.clientWidth + Math.floor(Math.random() * 200) + "px";
+                txtSpan.style.top = Math.round(Math.random() * maxTop) + "px";
+                txtSpan.style.color = colors[Math.floor(Math.random() * colors.length)];
+                showDmCache.push(txtSpan);
+            }
+           
+        }
+        function clearDm() {
+            while (showDmCache.length > 0) {
+                var span = showDmCache.pop();
+                span.style.display = "none";
+                hidedmCache.push(span);
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        window.SetFocusToElement = (element) =>
+        {
+            element.focus();
+        };
+        function CaclWindowWidth(selector,width,height)
+        {				
+            selector = ""+selector;
+            var node = document.querySelector(selector);
+            console.log(node);
+            var clientHeight = window.innerHeight*0.8;
+            var clientWidth = window.innerWidth
+            if (node)
+            {
+                 clientWidth = node.offsetWidth;
+                 clientHeight = node.offsetHeight;
+              
+            }
+            var h = clientHeight / height;
+            var w = clientWidth / width;
+            console.log(clientWidth);
+            console.log(w);
+            console.log(clientHeight);
+            console.log(h);
+            var min = w > h ? h : w;
+            return Math.floor(min);
+
+            return 24;
+        }
+    </script>
+    <script src="~/javascript/heti-addon.min.js" type="text/javascript"></script>
+</body>
+</html>

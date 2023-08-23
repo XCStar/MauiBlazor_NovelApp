@@ -1,0 +1,33 @@
+﻿@using MauiApp3.Model.Game;
+
+@code {
+    [Parameter]
+    public int Row { get; set; }
+    [Parameter]
+    public int Column { get; set; }
+    [Parameter]
+    public Tetromino Tetromino { get; set; }
+    [Parameter]
+    public Grid Grid { get; set; }
+    [Parameter]
+    public int cellWidth { get; set; } = 36;
+}
+@{
+    string extraCSS = "";
+    string style = $"width:{cellWidth}px;height:{cellWidth}px";
+    if (Grid.IsStarted)
+    {
+
+        if (Tetromino!=null&&Tetromino.CoveredCells.Contains(Row, Column))
+        {
+            extraCSS = "tetris-piece " + Tetromino.CssClass;
+        }
+        if (Grid.Cells.Contains(Row, Column))
+        {
+         
+            extraCSS = "tetris-piece " + Grid.Cells.GetCssClass(Row, Column);
+
+        }
+    }
+}
+<div id="@(Row+"-"+Column)" class="tetris-cell @extraCSS" style="@(style)"> </div>
