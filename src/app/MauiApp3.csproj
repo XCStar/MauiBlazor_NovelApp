@@ -131,6 +131,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
+
   <ItemGroup Condition="$(TargetFramework.Contains('-android'))">
     <ProjectReference Include="..\AndroidBindings\OcrLiteBinding\OcrLiteBinding.csproj" />
   </ItemGroup>
