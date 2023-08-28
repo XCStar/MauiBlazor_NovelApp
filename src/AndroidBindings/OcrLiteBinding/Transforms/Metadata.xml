@@ -6,4 +6,17 @@
   This sample removes the method: android.support.v4.content.CursorLoader.loadInBackground:
   <remove-node path="/api/package[@name='android.support.v4.content']/class[@name='CursorLoader']/method[@name='loadInBackground']" />
   -->
+  <attr  path="/api/package[@name='com.benjaminwan.ocrlibrary']/class[@name='TextBlock.Creator']/method[@name='newArray' and count(parameter)=1 and parameter[1][@type='int']]"
+         name="managedReturn">Java.Lang.Object[]</attr>
+  <attr  path="/api/package[@name='com.benjaminwan.ocrlibrary']/class[@name='Point.Creator']/method[@name='newArray' and count(parameter)=1 and parameter[1][@type='int']]"
+         name="managedReturn">Java.Lang.Object[]</attr>
+  <attr  path="/api/package[@name='com.benjaminwan.ocrlibrary']/class[@name='OcrResult.Creator']/method[@name='newArray' and count(parameter)=1 and parameter[1][@type='int']]" 
+         name="managedReturn">Java.Lang.Object[]</attr>
+  
+  <attr path="/api/package[@name='com.benjaminwan.ocrlibrary']/class[@name='Point.Creator']/method[@name='createFromParcel' and count(parameter)=1 and parameter[1][@type='android.os.Parcel']]"
+        name="managedReturn">Java.Lang.Object</attr>
+  <attr path="/api/package[@name='com.benjaminwan.ocrlibrary']/class[@name='TextBlock.Creator']/method[@name='createFromParcel' and count(parameter)=1 and parameter[1][@type='android.os.Parcel']]"
+        name="managedReturn">Java.Lang.Object</attr>
+  <attr path="/api/package[@name='com.benjaminwan.ocrlibrary']/class[@name='OcrResult.Creator']/method[@name='createFromParcel' and count(parameter)=1 and parameter[1][@type='android.os.Parcel']]"
+        name="managedReturn">Java.Lang.Object</attr>
 </metadata>

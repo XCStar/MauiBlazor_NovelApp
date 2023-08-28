@@ -132,4 +132,9 @@ public partial class OCR : ContentPage
            await DisplayAlert("提示", "复制成功！", "确认");
         }
     }
+    private async void Clear(object sender, EventArgs e)
+    {
+        Text = "";
+        recText.Text = "";
+    }
 }
