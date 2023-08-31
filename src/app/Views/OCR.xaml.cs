@@ -42,38 +42,30 @@ public partial class OCR : ContentPage
 #if ANDROID
       //Detect (global::Android.Graphics.Bitmap input, global::Android.Graphics.Bitmap output, int padding, int maxSideLen, float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle)
        //ocrEngine.Detect(null,null,50,0,0.3,2,0.6,true,true);
-        var fileResult= await filePicker.PickAsync(new PickOptions { PickerTitle="识别文件"  });
-  
-        if (fileResult!=null)
+        
+        var fileResult= await filePicker.PickMultipleAsync(new PickOptions { PickerTitle="识别文件"  });
+        Text=string.Empty;
+        if (fileResult!=null&&fileResult.Any())
         {
-                 
+               
                   recText.Text="正在识别中..........";
-                  //using var readStream=  await fileResult.OpenReadAsync();
-                  //var ms= Stream2MemoryStream(readStream);
-                  //var bytes=ms.ToArray();
-                  //var src= Android.Graphics.BitmapFactory.DecodeByteArray(bytes,0,bytes.Length);
-                  ocrResultImg.Source=ImageSource.FromStream(()=>fileResult.OpenReadAsync().Result);
+                  foreach (var file in fileResult)
+                  {
+                    ocrResultImg.Source=ImageSource.FromStream(()=>file.OpenReadAsync().Result);
                   OcrResult ocrResult=default(OcrResult);
                   Android.Graphics.Bitmap bgBitmap=default(Android.Graphics.Bitmap);
                   await Task.Run(()=>{
-                      var sourceBitmap=Android.Graphics.BitmapFactory.DecodeFile(fileResult.FullPath);
+                      var sourceBitmap=Android.Graphics.BitmapFactory.DecodeFile(file.FullPath);
                       bgBitmap=Android.Graphics.Bitmap.CreateBitmap(sourceBitmap.Width,sourceBitmap.Height,Android.Graphics.Bitmap.Config.Argb8888);
                       var maxSizeLen=Math.Max(sourceBitmap.Width,sourceBitmap.Height)*13;
                        ocrResult=ocrEngine.Detect(sourceBitmap,bgBitmap,maxSizeLen);
                   
-                  });
+                   });
                   if(ocrResult!=null)
                   {
-                      if(string.IsNullOrEmpty(ocrResult.StrRes))
-                      {
-                         recText.Text="无识别结果";
-                      }
-                      else
-                      {
-                        recText.Text=ocrResult.StrRes;
-                      }
-                      Text=ocrResult.StrRes;
-                      if(bgBitmap!=null)
+                  
+                      Text+=ocrResult.StrRes;
+                      if(fileResult.Count()==1&&bgBitmap!=null)
                       {
                             var path= FileSystem.Current.CacheDirectory;
                             var cachePath= Path.Combine(path,"ocrcache");
@@ -86,7 +78,7 @@ public partial class OCR : ContentPage
                             {
                               File.Delete(fileName);
                             }
-                          using(var stream=File.Open(fileName,FileMode.Create,FileAccess.Write))
+                           using(var stream=File.Open(fileName,FileMode.Create,FileAccess.Write))
                           {
                             await bgBitmap.CompressAsync(Android.Graphics.Bitmap.CompressFormat.Png,100,stream);
                            
@@ -95,16 +87,18 @@ public partial class OCR : ContentPage
                       }
                       
                   }
-                  else
-                  {
-                       recText.Text="无识别结果";
-                  }
                  
-                
-                  
+                  }
                   
         }
-      
+       if(string.IsNullOrEmpty(Text))
+       {
+         recText.Text="无识别结果";
+         return;
+       }
+       recText.Text=Text;
+                     
+                  
       
 #endif
     }

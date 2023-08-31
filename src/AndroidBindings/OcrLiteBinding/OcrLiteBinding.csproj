@@ -5,7 +5,4 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Additions\OcrLibrary-1.7.0-gpu-release.aar" />
-  </ItemGroup>
 </Project>
