@@ -156,6 +156,9 @@ public static class MauiProgram
             builder.Services.AddSingleton<XPTParser>();
             builder.Services.AddSingleton<QXSParser>();
             builder.Services.AddSingleton<MK99Parser>();
+            builder.Services.AddSingleton<FSParser>();
+
+
             builder.Services.AddSingleton(provider => {
                 Func<string, IPageParser> accesor = key => {
                     if (key == nameof(SoduParser))
@@ -198,6 +201,10 @@ public static class MauiProgram
                     else if (key == nameof(MK99Parser))
                     {
                         return provider.GetService<MK99Parser>();
+                    }
+                    else if (key == nameof(FSParser))
+                    {
+                        return provider.GetService<FSParser>();
                     }
                     else
                     {
@@ -252,6 +259,10 @@ public static class MauiProgram
                     {
                         return provider.GetService<MK99Service>();
                     }
+                    else if (key == nameof(FSService))
+                    {
+                        return provider.GetService<FSService>();
+                    }
                     else
                     {
                         throw new ArgumentException($"不支持的类型{key}");
@@ -270,7 +281,7 @@ public static class MauiProgram
             builder.Services.AddSingleton<XPTService>();
             builder.Services.AddSingleton<QXSService>();
             builder.Services.AddSingleton<MK99Service>();
-
+            builder.Services.AddSingleton<FSService>();
             builder.Services.AddSingleton<LinDianService>();
             builder.Services.AddSingleton<BQG1Service>();
             builder.Services.AddSingleton<KSKService>();

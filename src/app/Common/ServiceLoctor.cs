@@ -21,7 +21,8 @@ namespace MauiApp3.Common
               {nameof(BookBenService),nameof(BookBenService)},
                {nameof(XS166Service),nameof(XS166Service)},
                   {nameof(XPTService),nameof(XPTService)},
-            { nameof(QXSService),nameof(QXSService)}
+            { nameof(QXSService),nameof(QXSService)},
+             { nameof(FSService),nameof(FSService)}
 
         };
         public static readonly Dictionary<string, string> novelKeyPairs = new Dictionary<string, string>
@@ -30,6 +31,7 @@ namespace MauiApp3.Common
              {nameof(SHU20Service),"SHU20"},
              {nameof(BookBenService),"iBookBen"},
              {nameof(MK99Service),"MK99"},
+             {nameof(FSService),"飞速(快)"},
              {nameof(XS166Service),"166XS"},
              {nameof(QXSService),"求小说" },
              {nameof(BQG1Service),"笔趣阁"},
