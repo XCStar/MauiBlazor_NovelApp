@@ -31,7 +31,7 @@ else
     <div class="container">
         <p>@novelInfo.Description</p>
     </div>
-@*     <a href="{detial}/#bottom" name="top" >去底部</a> *@
+    
     <ul>
      
     @foreach (var item in novelInfo.Chapters)
@@ -46,7 +46,7 @@ else
        
     }
     </ul>
-    @* <a href="#top" target="_top" name="bottom">去顶部</a> *@
+   
     <MauiApp3.Components.NovelNaviageBar IndexUrl="@(RazorHelper.GetIndexUrl(type))"
     PrevtUrl="@(prevUrl)"
     NextUrl="@(nextUrl)"
@@ -118,7 +118,7 @@ else
         try
         {
             await js.InvokeVoidAsync("loading", true);
-         
+
             if (pageNum is null)
             {
                 pageNum = 1;   
@@ -152,5 +152,6 @@ else
 
 
     }
+
     
 }

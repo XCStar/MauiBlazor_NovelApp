@@ -72,7 +72,6 @@
                     hidedmCache.push(txtSpan);
                 }
             }
-            console.log("timerIntervalId:" + timerIntervalId);
             if (timerIntervalId == 0)
             {
                 timerIntervalId =setInterval(() => {
@@ -143,6 +142,21 @@
                 hidedmCache.push(span);
             }
         }
+        function scroll()
+        {
+            var scrollTop = window.document.documentElement.scrollTop;
+            var topHeight = 0;
+            console.log(scrollTop);
+            if (scrollTop < 500)
+            {
+                topHeight = window.document.documentElement.scrollHeight-window.document.documentElement.clientHeight;
+            }
+            window.scrollTo({
+                top: topHeight,
+                    behavior: "smooth"
+                });    
+        }
+
     </script>
     <script type="text/javascript">
         window.SetFocusToElement = (element) =>
